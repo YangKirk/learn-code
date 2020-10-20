@@ -1,3 +1,0 @@
-Hi git!
-Hi github!
-Hi origin!
