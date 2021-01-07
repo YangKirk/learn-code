@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3215b5b-b20a-4cba-99ca-c4014e8a756a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_13rd.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_14th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_20th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_21st.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_26th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_27th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_28th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_7th.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_9/leetcode_9th.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_9/leetcode_1st.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_9/leetcode_1st.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/level_9/leetcode_14th.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_9/leetcode_14th.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,8 +51,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/level_9/leetcode_14th.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="623">
-              <caret line="55" column="8" lean-forward="true" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+            <state relative-caret-position="493">
+              <caret line="57" selection-start-line="57" selection-end-line="57" />
             </state>
           </provider>
         </entry>
@@ -166,11 +156,6 @@
             <path>
               <item name="learncode" type="b2602c69:ProjectViewProjectNode" />
               <item name="learncode" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="learncode" type="b2602c69:ProjectViewProjectNode" />
-              <item name="learncode" type="462c0819:PsiDirectoryNode" />
-              <item name="level_9" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -332,12 +317,12 @@
     <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.123670734" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.123670734" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3285968" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32735777" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32735777" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -514,8 +499,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/level_9/leetcode_14th.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="623">
-          <caret line="55" column="8" lean-forward="true" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+        <state relative-caret-position="493">
+          <caret line="57" selection-start-line="57" selection-end-line="57" />
         </state>
       </provider>
     </entry>

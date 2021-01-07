@@ -42,9 +42,10 @@ class Solution:
         #         return str0
         #
 
-        s = ""
         # zip()方法压缩打包成元组，zip(*)方法解压为列表
+        s = ""
         for i in zip(*strs):
+
             print(list(i))
             print(set(i))
             # len(set()) 集合是无序不重复的，利用不重复性，判断如果长度不为1，则有两个字母
@@ -52,8 +53,9 @@ class Solution:
                 s += i[0]
                 print(s)
             else:
-                return s
+                break
+        return s
 
 
-s = Solution()
-print(s.longestcommonprefix(strs=["flower", "flow", "flight"]))
+so = Solution()
+print(so.longestcommonprefix(strs=["flower", "flow", "flight"]))
