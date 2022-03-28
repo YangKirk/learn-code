@@ -673,3 +673,317 @@ b = 1		# 报错	NameError: name 'b' is not defined
 
 
 
+## 五、Python的包和模块
+
+### 1、什么是模块？
+
+![](/home/kirk/Desktop/learn-code/level_14/21.png)
+
+### 2、包和模块的导入
+
+![image-20220323215022991](/home/kirk/.config/Typora/typora-user-images/image-20220323215022991.png)
+
+### 3、关于 `if __name__	== '__main__':  `语句的作用
+
+![image-20220323215034888](/home/kirk/.config/Typora/typora-user-images/image-20220323215034888.png)
+
+
+
+## 六、Python 面向对象编程
+
+- #### 面向对象编程有什么好处？为什么要使用面向对象编程？
+
+![image-20220323223926719](/home/kirk/.config/Typora/typora-user-images/image-20220323223926719.png)
+
+### 1、面向对象编程概要
+
+- #### 面向过程：做一件事需要按照什么样的过程来完成。
+
+- #### 面向对象：将一件事情先想象为一个对象，然后通过提取该对象的所有共同方法和属性，利用这些方法和属性来完成这件事情的思想。
+
+- #### 方法其实就是函数在面向对象编程里的一种叫法， 属性其实就是变量在面向对象编程里面的一种叫法
+
+- #### 类：具有相同属性和方法的对象的总称。
+
+- #### 对象：类的一个实例叫做对象。
+
+- #### Python里面自定义了一个终极父类Object(所有类的父类)
+
+- #### 实例方法：只能由类的实例来进行调用的方法。
+
+- #### 实例属性：只能通过实例访问的属性，在`__init__`类初始化方法中定义，随类的实例化而初始化。
+
+- #### `__init__方法`：会在初始化一个类的实例的时候被自动调用。
+
+- #### self关键字的作用：self的作用主要是在自定义方法时表明当前方法是一个实例方法，只能由类的实例来进行调用。self在定义方法时必须以第一个参数的形式定义到实例方法中，而在调用时则不需要写self参数。
+
+- #### 类方法：类方法必须由`@classmethod`来进行装饰，第一个参数必须是cls，并且既可以由类名直接访问，也可以由实例来访问。实例的权限是高于类权限的。
+
+- #### 类属性：相当于类中的全局变量
+
+- ```python
+  # 代码举例
+  class Student:
+    a = 1 	# 类属性
+    def __init__(self):		# init方法会在初始化一个类的实例的时候被自动调用
+        self.name = 'zhangsan'	# 实例属性
+    def study(self):	# self代表当前这个方法是一个实例方法,只能由Student类的实例来调用
+        print(f'{self.name}在学习！')
+        print(Student.a)
+  
+    @classmethod
+  def running(cls):	
+        # cls代表当前这个方法是个类方法，可以由类调用或者实例调用，必须用装饰器classmethod进行装饰
+        print('学生在跑步')
+  
+  ```
+
+- #### 属性方法： 属性方法必须由`@property`来进行装饰, 第一个参数必须是self，既是类中的一个方法，又可以作为一个类属性使用。
+
+- ```python
+  # 代码举例
+  class Rectangle:
+      def __init__(self, height, width):
+          self.height = height
+          self.width = width
+          # self.area = self.height * self.width  # 不能把area属性暴露出去
+  
+      def get_area(self):
+          return self.area	# 作为属性调用
+  
+      @property
+      def area(self):		# 定义一个属性方法
+          return self.height * self.width
+  
+  
+  rectangle = Rectangle(10, 5)
+  print(rectangle.area)	# 直接访问类属性
+  print(rectangle.get_area())	
+  ```
+
+
+
+
+
+
+
+### 2、定义一个类
+
+![image-20220325200153446](/home/kirk/.config/Typora/typora-user-images/image-20220325200153446.png)
+
+![image-20220325200311612](/home/kirk/.config/Typora/typora-user-images/image-20220325200311612.png)
+
+
+
+### 3、面向对象的特性
+
+![image-20220325203057490](/home/kirk/.config/Typora/typora-user-images/image-20220325203057490.png)
+
+- ### 继承特性的注意事项
+
+#### a.子类没有定义自己的初始化函数，父类的初始化函数会被继承，需要传入对应的参数![image-20220325203753804](/home/kirk/.config/Typora/typora-user-images/image-20220325203753804.png)
+
+#### b.子类定义了自己的初始化函数，但没有显示调用父类初始化函数，父类属性不会被初始化![image-20220325203818825](/home/kirk/.config/Typora/typora-user-images/image-20220325203818825.png)
+
+#### c.子类定义了自己的初始化函数并显示调用父类初始化函数，父类子类属性都会被初始化![image-20220325203836297](/home/kirk/.config/Typora/typora-user-images/image-20220325203836297.png)
+
+#### d.如果子类的方法和父类对应的方法有不同操作逻辑，则需要在子类重写父类同名方法![image-20220325203851975](/home/kirk/.config/Typora/typora-user-images/image-20220325203851975.png)
+
+
+
+## 七、Python文件读写操作
+
+![image-20220325203945864](/home/kirk/.config/Typora/typora-user-images/image-20220325203945864.png)
+
+### 1、常用文件读写模式(mode参数)
+
+![image-20220325204031494](/home/kirk/.config/Typora/typora-user-images/image-20220325204031494.png)
+
+
+
+### 2、常用文件读取方式（函数）
+
+![image-20220325204143450](/home/kirk/.config/Typora/typora-user-images/image-20220325204143450.png)
+
+```python
+with open('node.txt', mode='w', encoding='utf8') as f:
+    content = ['我本将心向明月\n', '奈何明月照沟渠\n']
+    f.writelines(content)
+
+with open('node.txt') as f:
+    for line in f:
+        print(line)	
+
+"""
+我本将心向明月
+
+奈何明月照沟渠
+
+"""
+```
+
+
+
+### 3、常用文件写数据方法
+
+![image-20220325204242801](/home/kirk/.config/Typora/typora-user-images/image-20220325204242801.png)
+
+## 八、Python 异常处理和语法错误
+
+### 1、Python的语法错误或者称之为解析错误，例如缺少冒号':'
+
+![image-20220328085545172](/home/kirk/.config/Typora/typora-user-images/image-20220328085545172.png)
+
+### 2、异常处理的语法和原则
+
+![image-20220328085620252](/home/kirk/.config/Typora/typora-user-images/image-20220328085620252.png)
+
+```python
+while True:
+    a = input('请输入第一个数字：')
+    b = input('请输入第二个数字：')
+    try:
+        result = int(a) / int(b)
+        print(result)
+        break
+
+    except ValueError:
+        print('请输入一个有效的十进制数字!')
+
+    except ZeroDivisionError:
+        print('第二个数字请不要输入0，除数不能为0！')
+
+    except:
+        print('输入的数字无效，请检查！')
+
+    finally:    # 不管有没有出现异常，都会进入finally进行处理
+        print('当前进入了finally')
+```
+
+
+
+## 九、Python的装饰器
+
+### 1、装饰器的基本概念（装饰器 = 高阶函数 + 嵌套函数）
+
+![image-20220328090631081](/home/kirk/.config/Typora/typora-user-images/image-20220328090631081.png)
+
+- #### 装饰器的两个原则
+
+#### a.装饰器不能修改被装饰函数的源码
+
+#### b.装饰器不能修改被装饰函数的调用方式
+
+
+
+### 2、函数即变量
+
+#### a.函数既可以直接被调用，也可以赋值给变量
+
+```python
+def boo():
+    print('in boo')
+    return 1
+
+
+b = boo() # 如果函数名后面加了括号，代表执行该函数，然后返回值赋值给a变量(如果没有返回值，最好不要这么写)
+
+a = boo  # 如果函数名后面没有括号，则只代表函数的一个引用
+a()
+
+```
+
+![image-20220328091655155](/home/kirk/.config/Typora/typora-user-images/image-20220328091655155.png)
+
+### 3、高阶函数
+
+#### a.高阶函数的定义
+
+![image-20220328091820867](/home/kirk/.config/Typora/typora-user-images/image-20220328091820867.png)
+
+#### b.高阶函数的两个条件对编写装饰器的意义
+
+![image-20220328091855380](/home/kirk/.config/Typora/typora-user-images/image-20220328091855380.png)
+
+```python
+def foo():  # 定义 foo函数
+    print('in foo')  # foo函数功能输出 in foo
+
+
+def gf(func):  # 形参func接收函数传入
+    print(func)  # 打印形参，如果形参是个函数则会打印函数的内存地址
+    func()  # 调用传入的函数形参
+
+
+gf(foo)  # 调用gf函数
+```
+
+
+
+### 4、嵌套函数
+
+![image-20220328092346078](/home/kirk/.config/Typora/typora-user-images/image-20220328092346078.png)
+
+
+
+### 5、装饰器基本编写套路
+
+![image-20220328092429113](/home/kirk/.config/Typora/typora-user-images/image-20220328092429113.png)
+
+```python
+# 装饰器雏形
+import time
+
+
+def foo():
+    sum_ = 0
+    for i in range(10000000):
+        sum_ += i
+    print(sum_)
+    return 1
+
+
+def gf(func):  # 形参func接收函数传入
+    start_time = time.time()  # 记录当前时间作为开始时间
+    func()  # 调用传入的函数
+    end_time = time.time()  # 记录当前时间作为结束时间
+    print(f'函数运行时间为：{end_time - start_time}')
+    return func		# 返回函数名会再次执行此函数
+
+
+foo = gf(foo)  # 调用gf函数		
+foo()
+# 49999995000000
+# 函数运行时间为：0.379244327545166
+# 49999995000000
+
+```
+
+```python
+# 装饰器
+import time
+
+
+def timer(func):
+    def gf():  # 形参func接收函数传入
+        start_time = time.time()  # 记录当前时间作为开始时间
+        func()  # 调用传入的函数
+        end_time = time.time()  # 记录当前时间作为结束时间
+        print(f'函数运行时间为：{end_time - start_time}')
+
+    return gf  # 调用gf函数然后返回
+
+
+@timer  # 装饰器在Python中的语法糖,便捷使用（@timer就相当于foo = timer(foo)  foo()）
+def foo():
+    sum_ = 0
+    for i in range(10000000):
+        sum_ += i
+    print(sum_)
+
+
+foo()
+# 49999995000000
+# 函数运行时间为：0.38902783393859863
+```
+
