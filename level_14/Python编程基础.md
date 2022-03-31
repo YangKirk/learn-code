@@ -987,3 +987,237 @@ foo()
 # 函数运行时间为：0.38902783393859863
 ```
 
+
+
+## 十、Python多线程和多进程
+
+### 1、线程和进程基本概念
+
+- #### 线程： CPU最小的调度单位（一个进程可以有多个线程）
+
+- #### 进程:  资源分配的最小单位（通常一个程序即一个进程）
+
+
+
+### 2、如何创建线程(两种方式)
+
+```python
+# 1 通过target=xxx来实现对函数的定位，每个线程去执行哪一个函数
+import threading
+import time
+
+
+namelist = ['wn', 'python', 'test']
+
+def action(content):
+    for item in content:
+        # current_thread()方法返回当前线程
+        print(threading.current_thread().getName() + item)
+        time.sleep(1)
+
+for i in range(1, 4):
+    # 创建子线程3个， 每个子线程都传入namelist参数
+    t = threading.Thread(target=action, args=(namelist, ))	
+    # 参数必须以元组形式传入，如果只有一个参数，必须打逗号
+    t.start()
+print('主线程结束')
+
+# 2 通过自己创建的类继承thread.Thread,然后重写其中的run方法，再实例化该类调用start方法
+import threading
+import time
+
+
+class MyThread(threading.Thread):
+    """
+    创建多线程的第二种方式，通过继承父类
+    """
+
+    def run(self) -> None:
+        for i in range(3):
+            msg = "I'm" + self.name + "@" + str(i)
+            time.sleep(1)
+            print(msg)
+
+
+t = MyThread()
+t.start()
+```
+
+
+
+### 3、多线程：普通线程
+
+```python
+# 主线程不等待子线程.各个线程自己执行自己的.所以线程执行结束才结束
+def normal_thread():
+    """
+    在多线程执行过程中，有一个特点要注意，那就是每个线程各执行各的任务，不等待其它的线程，自顾自的完成自己的任务，比如下面的例子：
+    Returns:
+
+    """
+
+    def doWaiting():
+        print('子线程开始:', time.strftime('%H:%M:%S'))
+        time.sleep(3)
+        print('子线程结束', time.strftime('%H:%M:%S'))
+
+    t = threading.Thread(target=doWaiting)
+    t.start()
+    # 确保线程t已经启动
+    time.sleep(.1)
+    print('主线程开始干活')
+    print('主线程干完下班')
+
+# 执行结果
+"""
+子线程开始: 13:52:50
+主线程开始干活
+主线程干完下班
+子线程结束 13:52:53
+"""
+```
+
+
+
+### 4、多线程：阻塞线程（主线程等待子线程）
+
+- #### join方法：用于阻塞主线程，等待子线程运行完成后再运行主线程（主线程会等待子线程到天荒地老）
+
+  ```python
+  # 主线程等待子线程执行结束后在执行。join方式
+  def thread_main_wait():
+      def doWaiting():
+          print('子线程开始: ', time.strftime('%H:%M:%S'))
+          time.sleep(3)
+          print('子线程结束: ', time.strftime('%H:%M:%S'))
+  
+      print('主线程启动')
+      t = threading.Thread(target=doWaiting)
+      t.start()
+      # 确保线程t已经启动
+      time.sleep(.1)
+      print('子线程插入')
+      # 将一直堵塞，直到t运行结束。
+      t.join()
+      print('子线程结束')
+      print('主线程结束')
+      
+  # 执行结果
+  """
+  主线程启动
+  子线程开始:  13:58:24
+  子线程插入
+  子线程结束:  13:58:27
+  子线程结束
+  主线程结束
+  """
+  ```
+
+
+
+### 5、多线程：守护线程(主线程不等待子线程)
+
+```python
+# 主线程执行结束就会关闭任务.不会等待子线程结束. setDaemon(daemonic=True)
+def defend_thread():
+    """
+    守护线程会随着主线程的关闭而关闭。
+    Returns:
+
+    """
+
+    def run():
+        print(threading.currentThread().getName(), '开始工作')
+        time.sleep(2)
+        print('子线程工作完毕')
+
+    for i in range(3):
+        t = threading.Thread(target=run, )
+        t.setDaemon(daemonic=True)  # 将子线程设置为守护线程。必须在start()之前设置
+        t.start()
+
+    time.sleep(1)  # 主线程暂停1s
+    print('主线程结束！ ')
+    print(f'当前活跃的线程数量：{threading.active_count()}')  
+    # threading.active_count()方法会返回当前活跃的线程数，1个主线程+n个子线程
+    
+# 执行结果
+"""
+Thread-1 开始工作
+Thread-2 开始工作
+Thread-3 开始工作
+主线程结束！ 
+当前活跃的线程数量：4
+"""
+```
+
+
+
+## 十一、Python中的反射
+
+### 1、反射的概念
+
+- #### 通过**字符串**的形式
+
+- #### 运行程序时动态修改程序的变量、方法及属性的操作
+
+- #### 反射操作都会在内存中进行，并不会修改实际代码，主要目的是提高代码运行的灵活性
+
+
+
+### 2、反射中常用的四个方法
+
+- hasattr()	# 输入一个字符串，判断对象有没有这个方法或者属性
+
+- getattr() 	# 获取对象属性值或方法的引用，如果是方法，返回方法的引用，如果是属性，返回属性值。如果不存在此方法或属性，则抛出异常
+
+  ```python
+  class Dog:
+      def __init__(self, name):
+          self.name = name
+  
+      def eat(self):
+          print(f'{self.name}正在吃饭饭...')
+  
+      def sleep(self):
+          print(f'{self.name}正在睡觉觉...')
+  
+  
+  if __name__ == '__main__':
+      dog = Dog('二哈')
+      func = input('请输入您要执行的方法名或查询的属性：(eat or sleep or name)')
+  
+      if hasattr(dog, func):  # 输入一个字符串，判断对象有没有这个方法或者属性
+          try:
+              getattr(dog, func)()  # getattr()返回的是一个方法名
+          except TypeError:
+              print(f'查询的{func}属性值为: ', getattr(dog, func))   # 打印属性值
+  
+      else:
+          print('没有这个方法或属性')
+  ```
+
+- setattr() 	# 动态添加一个方法或属性
+
+  ```python
+  # 添加一个属性
+  dog = Dog('二哈')
+  attr_name = 'age'
+  name = 'name'
+  attr_value = input('请输入一个属性值：')
+  setattr(dog, attr_name, attr_value)		# 动态添加一个age属性
+  
+  print(f'{getattr(dog, name)}的年龄为：', getattr(dog, attr_name))
+  
+  # 添加一个方法
+  def play(name, content):
+      print(f'{name}正在{content}...')
+  
+  
+  dog = Dog('二哈')
+  method = input('请输入要绑定的方法名：')
+  setattr(dog, method, play)
+  getattr(dog, method)('二哈', '打豆豆')
+  ```
+
+- delattr()     # 动态删除一个方法或属性
