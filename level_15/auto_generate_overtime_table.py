@@ -99,7 +99,6 @@ def write_online_table(name_list_: list):
     # encoding:设置字符编码，一般要这样设置：w = Workbook(encoding=’utf-8’)，就可以在excel中输出中文了。默认是ascii
     # style_compression:表示是否压缩，不常用。
     workbook = xlwt.Workbook(encoding='utf-8', style_compression=0)
-
     # 创建一个sheet对象，一个sheet对象对应Excel文件中的一张表格
     # 其中的值班表是这张表的名字,cell_overwrite_ok，表示是否可以覆盖单元格，其实是Worksheet实例化的一个参数，默认值是False
     sheet = workbook.add_sheet('值班表', cell_overwrite_ok=True)
@@ -179,6 +178,17 @@ def change_over_work_value(excel_name_: str, name_list_: list):
     # 获取当月天数
     date_count = sheet_old.nrows - 1
 
+    # 添加晚班样式
+    style = xlwt.XFStyle()
+
+    pattern = xlwt.Pattern()
+
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['tan']  # 设置单元格背景色为棕褐色色
+
+    style.pattern = pattern
+
     # 给员工灌晚班数据
     # 有新员工
     if type(name_list_[-1]) is list:
@@ -190,7 +200,7 @@ def change_over_work_value(excel_name_: str, name_list_: list):
                 line = random.randint(leader_col_start + 1, sheet_old.ncols - len(name_list_[-1]) - 1)
                 if '晚班' not in sheet_old.row_values(i, leader_col_start + 1, sheet_old.ncols):
                     if sheet_old.cell(i, line).value != '休' and over_lines.get(line) < over_max:
-                        sheet.write(i, line, '晚班')
+                        sheet.write(i, line, '晚班', style=style)
                         over_lines[line] += 1
                         break
                     else:
@@ -203,14 +213,14 @@ def change_over_work_value(excel_name_: str, name_list_: list):
                 if '晚班' not in sheet_old.row_values(i, leader_col_start + 1, sheet_old.ncols):
                     if line < sheet_old.ncols - len(name_list_[-1]):
                         if sheet_old.cell(i, line).value != '休' and over_lines.get(line) < over_max:
-                            sheet.write(i, line, '晚班')
+                            sheet.write(i, line, '晚班', style=style)
                             over_lines[line] += 1
                             break
                         else:
                             continue
                     else:
                         if sheet_old.cell(i, line).value != '休' and over_lines.get(line) < 2:
-                            sheet.write(i, line, '晚班')
+                            sheet.write(i, line, '晚班', style=style)
                             over_lines[line] += 1
                             break
                         else:
@@ -226,7 +236,7 @@ def change_over_work_value(excel_name_: str, name_list_: list):
                 line = random.randint(leader_col_start + 1, sheet_old.ncols - 1)
                 if '晚班' not in sheet_old.row_values(i, leader_col_start + 1, sheet_old.ncols):
                     if sheet_old.cell(i, line).value != '休' and over_lines.get(line) < over_max:
-                        sheet.write(i, line, '晚班')
+                        sheet.write(i, line, '晚班', style=style)
                         over_lines[line] += 1
                         break
                     else:
