@@ -2,7 +2,7 @@
 
 ## 一、程序的基本概念和开发环境搭建
 
-![](/home/kirk/Desktop/learn-code/level_14/1.png)
+![](Python编程基础.assets/1.png)
 
 #### 1、如何从一堆数字中找到最大的那个数？ [1, 3, 17, 4, 34, 56]
 
@@ -44,7 +44,7 @@ print(f'学生姓名：{b}')
 
 ### 1、数据类型定义
 
-![](/home/kirk/Desktop/learn-code/level_14/2.png)
+![](Python编程基础.assets/2.png)
 
 #### a.不可变数据类型(Number/String/Tuple)
 
@@ -84,7 +84,7 @@ print(a)
 
 ### 2、数值类型(Number)
 
-![](/home/kirk/Desktop/learn-code/level_14/3.png)
+![](Python编程基础.assets/3.png)
 
 
 
@@ -144,7 +144,7 @@ print(a)
 
 ### 3、字符串类型（String）
 
-![](/home/kirk/Desktop/learn-code/level_14/4.png)
+![](Python编程基础.assets/4.png)
 
 - #### 要求以-1为步长，按字符串内容去掉单引号后反序输出，显示结果
 
@@ -230,7 +230,7 @@ print(s[1:-1][::-1])	# dlrow ,olleh
 
 ### 4、列表类型(List)
 
-![](/home/kirk/Desktop/learn-code/level_14/5.png)
+![](Python编程基础.assets/5.png)
 
 
 
@@ -349,7 +349,7 @@ print(s[1:-1][::-1])	# dlrow ,olleh
 
 ### 5、元组类型(Tuple)
 
-![](/home/kirk/Desktop/learn-code/level_14/6.png)
+![](Python编程基础.assets/6.png)
 
 #### a.如果元组只有一个元素的话，必须在这个元素后面加一个逗号，才会定义为一个元组对象
 
@@ -435,7 +435,7 @@ print(set('hello world!'))		# {' ', 'l', 'w', '!', 'o', 'r', 'd', 'e', 'h'}
 
 ### 7、 字典类型(Dictionary)
 
-![](/home/kirk/Desktop/learn-code/level_14/7.png)
+![](Python编程基础.assets/7.png)
 
 #### a.字典的特性
 
@@ -531,51 +531,49 @@ if not a:   # 当a为假时条件成立，等价于 if a == False
 
 ### 2、While循环
 
-![](/home/kirk/Desktop/learn-code/level_14/8.png)
+![](Python编程基础.assets/8.png)
 
 ### 3、For循环
 
-![](/home/kirk/Desktop/learn-code/level_14/9.png)
+![](Python编程基础.assets/9.png)
 
 ## 四、Python 函数
 
 ### 1、函数的意义
 
-![image-20220320191803491](/home/kirk/.config/Typora/typora-user-images/image-20220320191803491.png)
-
-
+![](Python编程基础.assets/10.png)
 
 ### 2、函数的定义
 
-![image-20220320191853584](/home/kirk/.config/Typora/typora-user-images/image-20220320191853584.png)
+![](Python编程基础.assets/11.png)
 
 ### 3、函数的定义规则
 
-![image-20220320192013851](/home/kirk/.config/Typora/typora-user-images/image-20220320192013851.png)
+![](Python编程基础.assets/12.png)
 
 ### 4、函数参数
 
-![image-20220320192051302](/home/kirk/.config/Typora/typora-user-images/image-20220320192051302.png)
+![](Python编程基础.assets/13.png)
 
 #### a.函数参数---位置参数(Positional Argument)
 
-![image-20220320192242488](/home/kirk/.config/Typora/typora-user-images/image-20220320192242488.png)
+![](Python编程基础.assets/14.png)
 
 
 
 #### b.函数参数---关键字参数
 
-![image-20220320192329914](/home/kirk/.config/Typora/typora-user-images/image-20220320192329914.png)
+![](Python编程基础.assets/15.png)
 
 
 
 #### c.函数参数---默认值参数
 
-![image-20220320192420699](/home/kirk/.config/Typora/typora-user-images/image-20220320192420699.png)
+![](Python编程基础.assets/16.png)
 
 #### d.函数参数---不定长参数(元组--*args)
 
-![image-20220320193509421](/home/kirk/.config/Typora/typora-user-images/image-20220320193509421.png)
+![](Python编程基础.assets/17.png)
 
 - ##### 范例
 
@@ -601,7 +599,7 @@ if not a:   # 当a为假时条件成立，等价于 if a == False
 
 #### e.函数参数---不定长参数(字典---**kwargs)
 
-![image-20220321084230546](/home/kirk/.config/Typora/typora-user-images/image-20220321084230546.png)
+![](Python编程基础.assets/18.png)
 
 - ##### PS: 注意，不定长参数需要写在位置参数的后面，否则会报错
 
@@ -629,7 +627,7 @@ if not a:   # 当a为假时条件成立，等价于 if a == False
   
 ### 5、函数变量作用域
 
-   ![image-20220321085015213](/home/kirk/.config/Typora/typora-user-images/image-20220321085015213.png)
+   ![](Python编程基础.assets/19.png)
 
 #### a. 一个变量必须先初始化再访问，不能先访问再初始化
 
@@ -640,7 +638,7 @@ b = 1		# 报错	NameError: name 'b' is not defined
 
 #### b. 全局变量使用规则
 
-![image-20220321085437020](/home/kirk/.config/Typora/typora-user-images/image-20220321085437020.png)
+![](Python编程基础.assets/20.png)
 
 - ```python
   b = 1
@@ -677,15 +675,15 @@ b = 1		# 报错	NameError: name 'b' is not defined
 
 ### 1、什么是模块？
 
-![](/home/kirk/Desktop/learn-code/level_14/21.png)
+![](Python编程基础.assets/21.png)
 
 ### 2、包和模块的导入
 
-![image-20220323215022991](/home/kirk/.config/Typora/typora-user-images/image-20220323215022991.png)
+![](Python编程基础.assets/22.png)
 
 ### 3、关于 `if __name__	== '__main__':  `语句的作用
 
-![image-20220323215034888](/home/kirk/.config/Typora/typora-user-images/image-20220323215034888.png)
+![](Python编程基础.assets/23.png)
 
 
 
@@ -693,7 +691,7 @@ b = 1		# 报错	NameError: name 'b' is not defined
 
 - #### 面向对象编程有什么好处？为什么要使用面向对象编程？
 
-![image-20220323223926719](/home/kirk/.config/Typora/typora-user-images/image-20220323223926719.png)
+![](Python编程基础.assets/24.png)
 
 ### 1、面向对象编程概要
 
@@ -769,41 +767,41 @@ b = 1		# 报错	NameError: name 'b' is not defined
 
 ### 2、定义一个类
 
-![image-20220325200153446](/home/kirk/.config/Typora/typora-user-images/image-20220325200153446.png)
+![](Python编程基础.assets/25.png)
 
-![image-20220325200311612](/home/kirk/.config/Typora/typora-user-images/image-20220325200311612.png)
+![](Python编程基础.assets/26.png)
 
 
 
 ### 3、面向对象的特性
 
-![image-20220325203057490](/home/kirk/.config/Typora/typora-user-images/image-20220325203057490.png)
+![](Python编程基础.assets/27.png)
 
 - ### 继承特性的注意事项
 
-#### a.子类没有定义自己的初始化函数，父类的初始化函数会被继承，需要传入对应的参数![image-20220325203753804](/home/kirk/.config/Typora/typora-user-images/image-20220325203753804.png)
+#### a.子类没有定义自己的初始化函数，父类的初始化函数会被继承，需要传入对应的参数![](Python编程基础.assets/28.png)
 
-#### b.子类定义了自己的初始化函数，但没有显示调用父类初始化函数，父类属性不会被初始化![image-20220325203818825](/home/kirk/.config/Typora/typora-user-images/image-20220325203818825.png)
+#### b.子类定义了自己的初始化函数，但没有显示调用父类初始化函数，父类属性不会被初始化![](Python编程基础.assets/29.png)
 
-#### c.子类定义了自己的初始化函数并显示调用父类初始化函数，父类子类属性都会被初始化![image-20220325203836297](/home/kirk/.config/Typora/typora-user-images/image-20220325203836297.png)
+#### c.子类定义了自己的初始化函数并显示调用父类初始化函数，父类子类属性都会被初始化![](Python编程基础.assets/30.png)
 
-#### d.如果子类的方法和父类对应的方法有不同操作逻辑，则需要在子类重写父类同名方法![image-20220325203851975](/home/kirk/.config/Typora/typora-user-images/image-20220325203851975.png)
+#### d.如果子类的方法和父类对应的方法有不同操作逻辑，则需要在子类重写父类同名方法![](Python编程基础.assets/31.png)
 
 
 
 ## 七、Python文件读写操作
 
-![image-20220325203945864](/home/kirk/.config/Typora/typora-user-images/image-20220325203945864.png)
+![](Python编程基础.assets/32.png)
 
 ### 1、常用文件读写模式(mode参数)
 
-![image-20220325204031494](/home/kirk/.config/Typora/typora-user-images/image-20220325204031494.png)
+![](Python编程基础.assets/33.png)
 
 
 
 ### 2、常用文件读取方式（函数）
 
-![image-20220325204143450](/home/kirk/.config/Typora/typora-user-images/image-20220325204143450.png)
+![](Python编程基础.assets/34.png)
 
 ```python
 with open('node.txt', mode='w', encoding='utf8') as f:
@@ -826,17 +824,17 @@ with open('node.txt') as f:
 
 ### 3、常用文件写数据方法
 
-![image-20220325204242801](/home/kirk/.config/Typora/typora-user-images/image-20220325204242801.png)
+![](Python编程基础.assets/35.png)
 
 ## 八、Python 异常处理和语法错误
 
 ### 1、Python的语法错误或者称之为解析错误，例如缺少冒号':'
 
-![image-20220328085545172](/home/kirk/.config/Typora/typora-user-images/image-20220328085545172.png)
+![](Python编程基础.assets/36.png)
 
 ### 2、异常处理的语法和原则
 
-![image-20220328085620252](/home/kirk/.config/Typora/typora-user-images/image-20220328085620252.png)
+![](Python编程基础.assets/37.png)
 
 ```python
 while True:
@@ -866,7 +864,7 @@ while True:
 
 ### 1、装饰器的基本概念（装饰器 = 高阶函数 + 嵌套函数）
 
-![image-20220328090631081](/home/kirk/.config/Typora/typora-user-images/image-20220328090631081.png)
+![](Python编程基础.assets/38.png)
 
 - #### 装饰器的两个原则
 
@@ -893,17 +891,17 @@ a()
 
 ```
 
-![image-20220328091655155](/home/kirk/.config/Typora/typora-user-images/image-20220328091655155.png)
+![](Python编程基础.assets/39.png)
 
 ### 3、高阶函数
 
 #### a.高阶函数的定义
 
-![image-20220328091820867](/home/kirk/.config/Typora/typora-user-images/image-20220328091820867.png)
+![](Python编程基础.assets/40.png)
 
 #### b.高阶函数的两个条件对编写装饰器的意义
 
-![image-20220328091855380](/home/kirk/.config/Typora/typora-user-images/image-20220328091855380.png)
+![](Python编程基础.assets/41.png)
 
 ```python
 def foo():  # 定义 foo函数
@@ -922,13 +920,13 @@ gf(foo)  # 调用gf函数
 
 ### 4、嵌套函数
 
-![image-20220328092346078](/home/kirk/.config/Typora/typora-user-images/image-20220328092346078.png)
+![](Python编程基础.assets/42.png)
 
 
 
 ### 5、装饰器基本编写套路
 
-![image-20220328092429113](/home/kirk/.config/Typora/typora-user-images/image-20220328092429113.png)
+![](Python编程基础.assets/43.png)
 
 ```python
 # 装饰器雏形
