@@ -858,9 +858,9 @@ SELECT DISTINCT deptno FROM emp;
 SELECT 列名 FROM 表名 LIMIT [offset,] count;	-- offset参数默认值为0,可以不填代表从第一行开始
 -- 举例
 SELECT * FROM emp LIMIT 5,6;	-- 从偏移量为5的行开取6行，偏移量为5代表第6行(注意第一行偏移量为0)
-SELECT * FROM emp LIMIT 5；	-- 等同于SELECT * FROM emp LIMIT 0,5;
+SELECT * FROM emp LIMIT 5;	-- 等同于SELECT * FROM emp LIMIT 0,5;
 SELECT * FROM emp ORDER BY sal DESC LIMIT 3;	-- 求工资最高的前三个员工信息
-SELECT * FROM emp ORDER BY sql DESC LIMIT 3,1;	-- 求工资第四高的员工信息
+SELECT * FROM emp ORDER BY sal DESC LIMIT 3,1;	-- 求工资第四高的员工信息
 ```
 
 #### h.数据条件查询----WHERE关键字
@@ -899,7 +899,7 @@ SELECT ename, job, deptno FROM emp WHERE Job='CLERK';
   ```sql
   -- 举例
   SELECT ename, sal, comm FROM emp
-  WHERE sql<=comm;
+  WHERE sal<=comm;
   ```
 
   
@@ -948,7 +948,7 @@ SELECT ename, job, deptno FROM emp WHERE Job='CLERK';
 
     ```sql
     -- 举例
-    SELECT ename，mgr FROM emp WHERE mgr IS NULL；
+    SELECT ename，mgr FROM emp WHERE mgr IS NULL;
     ```
 
     
@@ -1232,4 +1232,271 @@ GROUP BY deptno;		-- 先执行求平均值，再过滤平均值中最大的列�
 
 
 
-### 8.
+### 8.子查询
+
+#### a.什么是子查询?
+
+![_77](数据库MySQL基础.assets/_77.png)
+
+#### b.子查询语法
+
+![_78](数据库MySQL基础.assets/_78.png)
+
+```sql
+SELECT 列名, 列名... FROM 表名
+WHERE （SELECT 列名列表 FROM 表名）;
+```
+
+![_79](数据库MySQL基础.assets/_79.png)
+
+```sql
+-- 举例
+SELECT ename FROM emp
+WHERE sal > (SELECT sal FROM emp WHERE empno=7566);
+```
+
+#### c.子查询的规则
+
+- #### 子查询要用括号括起来
+
+- #### 将子查询放在比较运算符的右边
+
+- #### 子查询中不要加ORDER BY 子句
+
+- #### 对单行子查询使用单行运算符
+
+- #### 对多行子查询使用多行运算符
+
+#### d.子查询的种类
+
+![_80](数据库MySQL基础.assets/_80.png)
+
+- #### 单行子查询
+
+  ![_81](数据库MySQL基础.assets/_81.png)
+
+  ![_82](数据库MySQL基础.assets/_82.png)
+
+  ```sql
+  -- 举例
+  SELECT ename, job
+  FROM emp
+  WHERE job=(SELECT job FROM emp
+            WHERE empno=7369)
+  AND sal > (SELECT sal FROM emp
+            WHERE empno=7876);
+  ```
+
+
+
+- #### 错误的子查询（多行子查询使用单行运算符）
+
+  ![_85](数据库MySQL基础.assets/_85.png)
+
+
+
+- #### 多行子查询
+
+  ![_86](数据库MySQL基础.assets/_86.png)
+
+  - #### 多行子查询中使用IN 运算符
+
+    ![_87](数据库MySQL基础.assets/_87.png)
+
+    ```sql
+    -- 举例
+    SELECT empno, ename, job, sal FROM emp
+    WHERE deptno IN (SELECT deptno FROM emp
+                    WHERE ename='SMITH' OR ename='MILLER');
+    ```
+
+  
+
+  - #### ANY多行子查询
+
+    ![_88](数据库MySQL基础.assets/_88.png)
+
+    ```sql
+    SELECT empno, ename, job FROM emp
+    WHERE sal > ANY (SELECT sal
+                    FROM emp
+                    WHERE job='CLERK');
+    ```
+
+  
+
+  - #### ALL多行子查询
+
+    ![_89](数据库MySQL基础.assets/_89.png)
+
+    ```sql
+    -- 举例
+    SELECT empno, ename, job, sal
+    FROM emp
+    WHERE sal > ALL (SELECT AVG(sal)
+                    FROM emp
+                    GROUP BY deptno);
+    ```
+
+    
+
+#### e.子查询中使用聚合函数
+
+![_83](数据库MySQL基础.assets/_83.png)
+
+```sql
+-- 举例
+SELECT ename, job, sal
+FROM emp
+WHERE sal=(SELECT MIN(sal)
+          FROM emp);
+```
+
+
+
+#### f.HAVING语句中使用子查询结果
+
+![_84](数据库MySQL基础.assets/_84.png)
+
+```sql
+-- 举例
+SELECT deptno, MIN(sal)
+FROM emp
+GROUP BY deptno
+HAVING MIN(sal) > (SELECT MIN(sal)
+                  FROM emp
+                  WHERE deptno=20);
+```
+
+
+
+#### g.子查询总结
+
+![_90](数据库MySQL基础.assets/_90.png)
+
+
+
+### 9.多表查询
+
+#### a.为什么要进行表连接？
+
+![_91](数据库MySQL基础.assets/_91.png)
+
+#### b.多表连接的主要类型
+
+- #### 内连接(INNER JOIN)
+
+- #### 外连接
+
+  - #### 左外连接(LEFT JOIN)
+
+  - #### 右外连接(RIGHT JOIN)
+
+#### c.内连接(INNER JOIN)
+
+![_92](数据库MySQL基础.assets/_92.png)
+
+![_93](数据库MySQL基础.assets/_93.png)
+
+```SQL
+SELECT 表名1.列名, 表名2.列名
+FROM 表1,表2
+WHERE 表1.列名 = 表2.列名;
+
+SELECT 表名1.列名, 表名2.列名
+FROM 表1 INNER JOIN 表2
+ON 表1.列名 = 表2.列名;
+```
+
+
+
+- ### 内连接必须指定连接条件, 否则会造成笛卡尔积结果(查询数据冗余无效)
+
+  ![_94](数据库MySQL基础.assets/_94.png)
+
+  ![_95](数据库MySQL基础.assets/_95.png)
+
+
+
+- #### 内连接范例
+
+  ![_96](数据库MySQL基础.assets/_96.png)
+
+  ```sql
+  -- 举例
+  SELECT emp.empno, emp.ename, emp.deptno, dept.deptno, dept.loc
+  FROM emp INNER JOIN dept
+  ON emp.deptno = dept.deptno;
+  ```
+
+
+
+- #### 内连接等值写法(不含INNER JOIN 关键字)
+
+  ![_97](数据库MySQL基础.assets/_97.png)
+
+  ```sql
+  -- 举例
+  SELECT emp.empno, emp.ename, emp.deptno, dept.deptno, dept.loc
+  FROM emp, dept
+  WHERE emp.deptno=dept.deptno;
+  ```
+
+
+
+- #### 使用别名简化查询
+
+  - #### 多表连接中限定列名
+
+  - #### 使用表名作为前缀在多个表中指定列名
+
+  - #### 使用表前缀可以改进性能
+
+  - #### 使用列的别名以区分不用表的同名列
+
+  ![_99](数据库MySQL基础.assets/_99.png)
+
+  ```sql
+  -- 举例
+  SELECT e.empno, e.ename, e.deptno, d.deptno, d.loc
+  FROM emp e, dept d
+  WHERE e.deptno=d.deptno;
+  ```
+
+
+
+- #### 在多表连接中设置过滤条件
+
+  ![_100](数据库MySQL基础.assets/_100.png)
+
+  ```sql
+  -- 举例
+  SELECT emp.empno, emp.ename, emp.deptno, dept.deptno, dept.loc
+  FROM emp INNER JOIN dept
+  ON emp.deptno=dept.deptno AND emp.ename='KING';
+  ```
+
+
+
+#### d.外连接(LEFT JOIN&RIGHT JOIN)
+
+![_101](数据库MySQL基础.assets/_101.png)
+
+![_102](数据库MySQL基础.assets/_102.png)
+
+```SQL
+-- 举例
+SELECT emp.ename, dept.deptno
+FROM dept LEFT JOIN emp
+ON emp.deptno=dept.deptno;
+```
+
+
+
+#### e.多表连接查询总结
+
+![_103](数据库MySQL基础.assets/_103.png)
+
+
+
+### 10.
