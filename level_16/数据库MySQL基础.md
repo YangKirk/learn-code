@@ -635,7 +635,7 @@ CREATE TABLE Students(
 	SSex INT);
 
 -- INSERT INTO 表名(列名列表) VALUES值列表);
-INSERT INTO Students(SName, SAddress, SGrade, SEmail, SSex) VALUES'张三', '上海松江',6 'ZS@Sohu.com', 0);
+INSERT INTO Students(SName, SAddress, SGrade, SEmail, SSex) VALUES ('张三', '上海松江',6 'ZS@Sohu.com', 0);
 ```
 
 #### ![_13](数据库MySQL基础.assets/_13.png)
@@ -1497,6 +1497,544 @@ ON emp.deptno=dept.deptno;
 
 ![_103](数据库MySQL基础.assets/_103.png)
 
+------
 
 
-### 10.
+
+## 七、MySQL的高级特性
+
+### 1.定义
+
+![_104](数据库MySQL基础.assets/_104.png)
+
+### 2.变量
+
+- #### 用户自定义变量
+
+  ```sql
+  -- 第一种方式：以@开始，形式为@变量名
+  SET @nametest=666
+  -- 变量可以为数值、字符串等类型，要使用该变量时，直接利用@变量名的形式即可
+  SELECT @nametest;
+  
+  -- 第二种方式: 通过SELECT语句定义变量
+  -- 写法1：SELECT @variable_name :=value; 注意，这里是:=，不是=
+  -- 写法2：SELECT XXX into @variable_name 注意，这里XXX必须是返回一行数据的值，比如一个聚合函数一般通过select定义变量时，可以通过SQL语句来给变量赋值，方便后续使用
+  SELECT @maxsal:=MAX(sal) from emp;
+  SELECT MAX(sal) into @maxsal from emp;
+  
+  -- 查询@maxsal的值
+  select @maxsal;
+  select ename, sal from emp where sal = @maxsal;	-- 使用变量@maxsal的值求最高工资员工的姓名
+  -- 注意变量名均不区分大小写，@id等价于@ID
+  ```
+
+  
+
+### 3.存储过程(相当于MySQL的函数)
+
+![_105](数据库MySQL基础.assets/_105.png)
+
+- #### 定义存储过程
+
+  ```sql
+  DELIMITER //	-- 用于改变存储过程中的代码结束标识符，; --> //， 也可以不用写DELIMITER字段
+  	CREATE PROCEDURE 存储过程名字()
+  		BEGIN
+  			-- 存储过程代码
+  		END //	-- 如果没有DELIMITER 则应该接END;
+  DELIMITER ;		-- 用于改变存储过程中的代码结束标识符，; --> //， 也可以不用写DELIMITER字段
+  ```
+
+```sql
+-- 存储过程范例
+DROP PROCEDURE IF EXISTS get_maxsal;
+
+DELIMITER //
+	CREATE PROCEDURE get_maxsal()
+		BEGIN
+			SELECT MAX(sal) FROM emp;
+		END //
+DELIMITER;
+
+CALL get_maxsal();	-- 调用存储过程
+```
+
+
+
+- #### 在存储过程中声明并使用变量
+
+```sql
+-- 声明变量的语法：
+DECLARE variable_name datatype(size) DEFAULT default_value;
+-- 变量赋值
+SET 变量名 = 变量值 -- 注意区别于用户自定义变量，在存储过程中定义的变量赋值前面没有@符号
+-- 也可以使用sql语句赋值
+SELECT XXX into 变量名 from XXXX；
+```
+
+```sql
+-- 存储过程中声明使用变量范例
+DROP PROCEDURE IF EXISTS get_sal;
+DELIMITER //
+CREATE PROCEDURE get_sal()
+	BEGIN
+		DECLARE avgsal INT;
+		SELECT AVG(sal) INTO avgsal FROM emp;
+		SELECT ename, sal FROM emp WHERE sal > avgsal;
+	END //
+
+DELIMITER ;
+CALL get_sal();
+```
+
+
+
+- #### 带参数的存储过程
+
+  ![_106](数据库MySQL基础.assets/_106.png)
+
+  ```sql
+  -- 范例
+  DROP PROCEDURE IF EXISTS get_sal_1;
+  DELIMITER //
+  CREATE PROCEDURE get_sal_1(IN empname VARCHAR(5), OUT empsal INT)
+  	BEGIN
+  		SELECT sal INTO empsal FROM emp WHERE ename=empname;
+  	END //
+  
+  -- 在存储过程中定义的参数，会在mysql中自动生成以下划线命名的参数
+  CALL get_sal_1('BLAKE', @_empsal);
+  SELECT @_empsal;
+  ```
+
+
+
+### 4.存储过程中的流程控制语句
+
+- #### 分支
+
+  - #### IF
+
+    ```sql
+    -- 语法:
+    IF ... THEN
+    	...;
+    ELSEIF ... THEN
+    	...;
+    ELSE
+    	...;
+    END IF;		-- 不要忘记END IF
+    ```
+
+    ```sql
+    -- 范例
+    DROP PROCEDURE IF EXISTS get_sal_level;
+    DELIMITER //
+    CREATE PROCEDURE get_sal_level(IN empname VARCHAR(5), OUT sallevel VARCHAR(10))
+    	BEGIN
+    		DECLARE empsal INT;
+    		SELECT sal INTO empsal FROM emp WHERE ename=empname;
+    		IF empsal > 3000 THEN
+    			SET sallevel = 'high';
+    		ELSEIF empsal <= 3000 AND empsal >2000 THEN
+    			SET sallevel = 'middle';
+    		ELSE
+    			SET sallevel = 'low';
+    		END IF;
+    	END //
+    
+    CALL get_sal_level('BLAKE', @_sallevel);
+    SELECT @_sallevel;
+    ```
+
+    
+
+  - #### CASE
+
+    ```sql
+    -- 语法:
+    CASE ...
+    	WHEN .... THEN ...
+    	WHEN .... THEN ...
+    	...
+    ELSE ...	-- ELSE 语句是可选的，可不接
+    END CASE;	-- 不要忘记END CASE
+    ```
+
+    ```sql
+    -- 范例
+    CREATE PROCEDURE p()
+    	BEGIN
+    		DECLARE v INT DEFAULT 1;
+    		CASE v
+    			WHEN 2 THEN SELECT v;
+    			WHEN 3 THEN SELECT 0;
+    		ELSE
+    			BEGIN	-- 代表代码快的起始, 可以不用
+    				SELECT 'hello';
+    			END;	-- 代表代码快的结束，可以不用
+    		END CASE;
+    	END
+    
+    ```
+
+    
+
+- #### 循环
+
+  - #### REPEAT
+
+    ```sql
+    -- 语法
+    REPEAT
+    	...
+    UNTIL ...
+    END REPEAT;
+    ```
+
+    ```sql
+    -- 范例: 打印开始和结束数字的和
+    DROP PROCEDURE IF EXISTS dorepeat;
+    CREATE PROCEDURE dorepeat(IN b INT, IN e INT)
+    	BEGIN
+    		DECLARE total INT DEFAULT 0;
+    		DECLARE temp INT DEFAULT b;
+    		REPEAT
+    			SET total = total + temp;
+    			SET temp = temp + 1;
+    		UNTIL temp > e
+    		END REPEAT;
+    		SELECT total;
+    	END
+    
+    CALL dorepeat(1,10);
+    ```
+
+    
+
+  - #### WHILE
+
+    ```sql
+    -- 语法
+    WHILE ... DO
+    	...
+    END WHILE
+    ```
+
+    ```sql
+    -- 范例: 输出5,4,3,2,1
+    DROP PROCEDURE IF EXISTS dowhile;
+    CREATE PROCEDURE dowhile()
+    BEGIN
+    	DECLARE v1 INT DEFAULT 5;
+    	WHILE v1 > 0 DO
+    		SELECT 'hello';
+    		SELECT v1;
+    		SET v1=v1-1;
+    	END WHILE;
+    END;
+    ```
+
+- #### 跳出循环
+
+  - #### ITERATE: 只能出现在循环语句中，用于开始下次循环，类似continue
+
+    ```sql
+    -- 语法
+    ITERATE label
+    ```
+
+    
+
+  - #### LEAVE: 通过指定的label来退出流程控制块，如果label是在在外面的程序块则退出该程序。可以在begin...end和循环结构中使用。相当于break
+
+    ```sql
+    -- 语法
+    LEAVE label
+    ```
+
+    ```sql
+    -- 实例
+    DROP PROCEDURE IF EXISTS test_iterate;
+    DELIMITER //
+    CREATE PROCEDURE test_iterate(IN p INT)
+    BEGIN
+    	outw: WHILE TRUE DO
+    		SET p=p+1;
+    		IF p <=5 THEN
+    			ITERATE outw;
+    		ELSEIF p>=10 THEN
+    			LEAVE outw;
+    		END IF;
+    	END WHILE outw;
+    	SELECT p;
+    END //
+    
+    SET @a=2;
+CALL testITERATE(@a);
+    ```
+    
+    ```sql
+    -- 实例：打印5,3
+    DROP PROCEDURE IF EXISTS proc_repeattest;
+    DELIMITER //
+    CREATE PROCEDURE proc_repeattest()
+    BEGIN
+    	DECLARE num INT DEFAULT 6;
+    	outtest: REPEAT
+    		SET num=num-1;
+    		IF num = 4 THEN
+    			ITERATE outtest;
+    		ELSEIF num=2 THEN
+    			LEAVE outtest;
+    		END IF;
+    		SELECT num;
+    	UNTIL num < 1
+    	END REPEAT outtest;
+    END //
+    
+    CALL proc_repeattest();
+    ```
+
+
+
+### 5.触发器
+
+#### a.概念
+
+![_107](数据库MySQL基础.assets/_107.png)
+
+#### b.创建触发器
+
+![_108](数据库MySQL基础.assets/_108.png)
+
+```sql
+-- 语法
+CREATE TRIGGER 触发器名字
+trigger_time trigger_event ON 表名 FOR EACH ROW
+BEGIN
+	触发器代码
+END
+# trigger_time: {BEFORE|AFTER}  --> 触发器发生在事件之前还是之后
+# trigger_event: {INSERT|UPDATE|DELETE}  --> 触发器发生的事件
+```
+
+
+
+#### c.触发器相关概念(old&new)
+
+![_109](数据库MySQL基础.assets/_109.png)
+
+- ### 触发器执行监听操作，不需要显式调用.
+
+#### d.触发器部分语法
+
+```sql
+-- 删除
+DROP TRIGGER [IF EXISTS] trigger_name;
+
+-- 查看触发器
+SHOW TRIGGERS;
+```
+
+#### e.触发器实例
+
+```sql
+-- 向emp表中插入新数据，如果comm大于sal，则将comm设置为跟sal一样的值
+CREATE TRIGGER tri_comm BEFORE INSERT ON emp FOR EACH ROW
+BEGIN
+	IF new.comm > new.sal THEN
+		SET new.comm = new.sal;
+	END IF;
+END
+```
+
+```sql
+-- 删除dept表中还有员工的部门，弹出错误提示信息
+CREATE TRIGGER tri_comm BEFORE DELETE ON dept for EACH ROW
+BEGIN
+	IF old.deptno <> 40 THEN
+		SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = '不能删除还有员工的部门信息'; -- 必须写在一行上
+	END IF;
+END;
+
+DELETE FROM dept WHERE deptno = 30;
+```
+
+
+
+### 6.事务
+
+#### a.概述
+
+![_110](数据库MySQL基础.assets/_110.png)
+
+#### b.特性
+
+![_111](数据库MySQL基础.assets/_111.png)
+
+#### c.常见事务控制语句
+
+![_112](数据库MySQL基础.assets/_112.png)
+
+```sql
+-- 范例
+BEGIN;		-- 开始事务
+INSERT INTO dept VALUES(50,'TEST','CHINA');
+INSERT INTO dept VALUES(60,'JAVA','CHENGDU');
+COMMIT;		-- 提交事务
+
+BEGIN;
+INSERT INTO dept VALUES(50,'TEST','CHINA');
+INSERT INTO dept VALUES(60,'JAVA','CHENGDU');
+ROLLBACK;	-- 回滚事务
+```
+
+
+
+## 八、通过Python 连接MySQL
+
+```python
+import pymysql
+
+# 打开数据库连接,当使用本机的数据库时，host='localhost'
+db = pymysql.connect(host='192.168.xx.xx', user='root', password='xxxx', database='xxx')
+
+# 使用cursor() 创建一个游标对象cursor
+cursor = db.cursor()
+
+# 使用execute()方法执行SQL查询
+cursor.execute("SELECT VERSION()")	# 要执行的sql语句
+
+# 使用fetchone()方法获取单条数据.
+data = cursor.fetchone()
+print("Database Version : {}".format(data))
+
+# 关闭数据库连接
+db.close()
+```
+
+```python
+# 范例
+import pymysql
+
+# 打开数据库连接,当使用本机的数据库时，host='localhost'
+db = pymysql.connect(host='localhost', user='root', password='123456', database='tmp')
+
+# 使用cursor() 创建一个游标对象cursor
+cursor = db.cursor()
+
+# 使用execute()方法执行SQL查询
+cursor.execute("SELECT VERSION()")	# 要执行的sql语句
+
+# 使用fetchone()方法获取单条数据.
+data = cursor.fetchone()
+print("Database Version : {}".format(data))
+
+# 关闭数据库连接
+db.close()
+```
+
+```python
+# 范例2 通过with...as 语法打开数据库，无需再调用关闭数据库连接语句
+
+# 建立数据库连接
+with pymysql.connect(host='localhost', user='root', password='123456', database='tmp') as db:
+	# 使用cursor() 创建一个游标对象cursor
+	cursor = db.cursor()
+
+	# 使用execute()方法执行SQL查询
+	cursor.execute("SELECT VERSION()")	# 要执行的sql语句
+
+	# 使用fetchone()方法获取单条数据.
+	data = cursor.fetchone()
+	print("Database Version : {}".format(data))
+```
+
+```python
+# 范例3 通过预处理语句创建表
+wtih pymysql.connect(host='localhost', user='root', password='123456', database='tmp') as db:
+    # 使用cursor() 创建一个游标对象cursor
+	cursor = db.cursor()
+    
+    # 使用excute() 方法执行SQL：如果表存在则删除
+    cursor.execute("DROP TABLE IF EXISTS mytable")
+    
+    # 使用预处理语句创建表
+    sql = """CREATE TABLE mytable(
+    			FIRST_NAME CHAR(20) NOT NULL,
+    			LAST_NAME CHAR(20),
+    			AGE INT
+          	)"""
+    cursor.execute(sql)
+```
+
+```python
+# 范例4 通过python插入表中数据
+import pymysql
+db = pymysql.connect(host='localhost', user='root', password='123456', database='tmp')
+cursor = db.cursor()
+first_name, last_name, age = "Mac", "Mohan", 20
+# sql语句的语法潜规则规定必须有引号将值包起来
+sql = f"""INSERT INTO my_table(FIRST_NAME, LAST_NAME, AGE) VALUES ({repr(first_name)}, {repr(last_name)}, {repr(age)})"""	# repr()函数，可以将转换的字符串带有引号
+try:
+    cursor.execute(sql)
+    db.commit()
+    print('插入数据成功')
+except:
+    db.rollback()
+    print("插入数据失败，回滚")
+db.close()
+```
+
+```python
+# 范例5 通过Python查询数据
+with pymysql.connect(host='localhost', user='root', password='123456', database='tmp') as db:
+    cursor = db.cursor()
+    sql = "SELECT * FROM emp WHERE sal > %s" % (1000)
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()	# 返回查询到的所有行数据
+        print('结果数据共{}条'.format(cursor.rowcount))
+        for row in results:
+            print(row)	# 打印每一行数据
+            
+	except:
+        print("发生错误，无法查询数据")
+```
+
+```python
+# 范例6 通过Python调用存储过程，不带参数版
+import pymysql
+
+db = pymysql.connect(host='localhost', user='root', password='123456', database='tmp')
+
+cursor = db.cursor()
+
+try:
+	cursor.callproc('get_maxsal')	# 通过callproc方法调用存储过程
+    result = cursor.fetchall()
+    print(cursor.rowcount)	# 显示结果的行数
+    print(result)
+except:
+    print('调用错误')
+
+# 关闭数据库连接
+db.close()
+```
+
+```python
+# 范例6 通过Python调用存储过程，参数版
+with pymysql.connect(host='localhost', user='root', password='123456', database='tmp') as db:
+    cursor = db.cursor()
+
+    # 对于out或 inout参数python不支持，随便定义一个值即可，通常使用0
+    cursor.callproc('get_sal_1', ('BLAKE', 0))
+
+    # 对于out和inout型参数，是保存在服务器的变量中的，可以通过select语句查询
+    # 对应参数的访问格式为 @_存储过程名_0, @_存储过程名_1, 以此类推
+    cursor.execute('SELECT @_get_sal_1_0, @_get_sal_1_1')
+    print(cursor.fetchall())
+```
+
