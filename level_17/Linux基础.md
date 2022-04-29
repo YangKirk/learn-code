@@ -442,3 +442,41 @@ yum install -y unzip
 ## 2.卸载rpm包: rpm -e xxx.rpm
 
 ## 3.升级rpm包: rpm -uvh xxx.rpm
+
+
+
+# 四、Linux测试环境部署
+
+![image-20220429135719147](Linux基础.assets/image-20220429135719147.png)
+
+## 1.配置Xampp
+
+![image-20220429135743823](Linux基础.assets/image-20220429135743823.png)
+
+![image-20220429135803010](Linux基础.assets/image-20220429135803010.png)
+
+![image-20220429135809275](Linux基础.assets/image-20220429135809275.png)
+
+## 2.配置JAVA 环境变量
+
+![image-20220429135820596](Linux基础.assets/image-20220429135820596.png)
+
+![image-20220429135927909](Linux基础.assets/image-20220429135927909.png)
+
+## 3.配置Tomcat环境变量
+
+![image-20220429135937728](Linux基础.assets/image-20220429135937728.png)
+
+![image-20220429141109712](Linux基础.assets/image-20220429141109712.png)
+
+![image-20220429141142725](Linux基础.assets/image-20220429141142725.png)
+
+![image-20220429141300715](Linux基础.assets/image-20220429141300715.png)
+
+## 4.查看端口号(netstat -ano)
+
+![image-20220429141201512](Linux基础.assets/image-20220429141201512.png)
+
+## 5.查看日志(tail/more)
+
+![image-20220429141317605](Linux基础.assets/image-20220429141317605.png)
