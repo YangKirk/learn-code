@@ -11,8 +11,9 @@
 -------------------------------------------------
 """
 import json
-import os
 import random
+import sys
+import os
 
 import xlrd
 from xlutils.copy import copy
@@ -21,7 +22,13 @@ import datetime
 import calendar
 from tkinter import ttk, Tk, StringVar
 
-RESOURCE_DIR = os.path.dirname(__file__)
+if getattr(sys, 'frozen', False):
+    current_path = os.path.dirname(sys.executable)
+else:
+    current_path = os.path.dirname(os.path.realpath(__file__))
+
+config_json_file_path = os.path.join(current_path, 'write_table.json')
+print(config_json_file_path)
 
 
 def get_leader_work_list(list_count: int):
@@ -251,11 +258,10 @@ def change_over_work_value(excel_name_: str, name_list_: list):
 
 
 def get_name_list():
-    conf_file_path = RESOURCE_DIR + "/write_table.json"
     conf = None
     # 如果json配置文件存在就读取字典到conf
-    if os.path.isfile(conf_file_path):
-        with open(conf_file_path, 'r') as data:
+    if os.path.isfile(config_json_file_path):
+        with open(config_json_file_path, 'r') as data:
             conf = json.load(data)
     name_list_ = [[], ]
     dic_list = []
@@ -281,11 +287,10 @@ def gui_for_create_online_table():
     root = Tk()
     root.title('值班表生成工具(按提示填好名字保存退出即可)')
 
-    conf_file_path = RESOURCE_DIR + "/write_table.json"
     conf = None
     # 如果json配置文件存在就读取字典到conf
-    if os.path.isfile(conf_file_path):
-        with open(conf_file_path, 'r') as data:
+    if os.path.isfile(config_json_file_path):
+        with open(config_json_file_path, 'r') as data:
             conf = json.load(data)
 
     # 设定文本框默认值
@@ -347,7 +352,7 @@ def gui_for_create_online_table():
                  m1=m1_default.get(),
                  m2=m2_default.get(), m3=m3_default.get(), m4=m4_default.get())
         # 保存配置
-        with open(conf_file_path, "w") as f:
+        with open(config_json_file_path, "w") as f:
             f.write(json.dumps(d))
 
         root.destroy()
