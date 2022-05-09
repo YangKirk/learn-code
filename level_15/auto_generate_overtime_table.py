@@ -10,6 +10,8 @@
                    2022/3/30
 -------------------------------------------------
 """
+import json
+import os
 import random
 
 import xlrd
@@ -17,6 +19,9 @@ from xlutils.copy import copy
 import xlwt
 import datetime
 import calendar
+from tkinter import ttk, Tk, StringVar
+
+RESOURCE_DIR = os.path.dirname(__file__)
 
 
 def get_leader_work_list(list_count: int):
@@ -245,13 +250,202 @@ def change_over_work_value(excel_name_: str, name_list_: list):
     workbook.save(excel_name_)
 
 
-if __name__ == '__main__':
-    pass
-    """
-    name_list填写值，请区分主管列，员工列，新人列
-    对应name_list = [[主管列],员工列,[新人列]]
-    没有新人，可以不用加最后的中括号，例如[[主管],员工]
-    """
-    name_list = [['x'], 'y']
+def get_name_list():
+    conf_file_path = RESOURCE_DIR + "/write_table.json"
+    conf = None
+    # 如果json配置文件存在就读取字典到conf
+    if os.path.isfile(conf_file_path):
+        with open(conf_file_path, 'r') as data:
+            conf = json.load(data)
+    name_list_ = [[], ]
+    dic_list = []
+    for value in conf.values():
+        dic_list.append(value)
+    for value in dic_list[0:4]:
+        if value not in ["", None]:
+            name_list_[0].append(value)
+    for value in dic_list[4:14]:
+        if value not in ["", None]:
+            name_list_.append(value)
+    new_list = []
+    for value in dic_list[14:]:
+        if value not in ["", None]:
+            new_list.append(value)
+    if len(new_list) != 0:
+        name_list_.append(new_list)
+    print(name_list_)
+    return name_list_
+
+
+def gui_for_create_online_table():
+    root = Tk()
+    root.title('值班表生成工具(按提示填好名字保存退出即可)')
+
+    conf_file_path = RESOURCE_DIR + "/write_table.json"
+    conf = None
+    # 如果json配置文件存在就读取字典到conf
+    if os.path.isfile(conf_file_path):
+        with open(conf_file_path, 'r') as data:
+            conf = json.load(data)
+
+    # 设定文本框默认值
+    e1_default = StringVar()
+    e1_default.set("" if conf is None else conf.get("e1"))
+    e2_default = StringVar()
+    e2_default.set("" if conf is None else conf.get("e2"))
+    e3_default = StringVar()
+    e3_default.set("" if conf is None else conf.get("e3"))
+    e4_default = StringVar()
+    e4_default.set("" if conf is None else conf.get("e4"))
+    n1_default = StringVar()
+    n1_default.set("" if conf is None else conf.get("n1"))
+    n2_default = StringVar()
+    n2_default.set("" if conf is None else conf.get("n2"))
+    n3_default = StringVar()
+    n3_default.set("" if conf is None else conf.get("n3"))
+    n4_default = StringVar()
+    n4_default.set("" if conf is None else conf.get("n4"))
+    n5_default = StringVar()
+    n5_default.set("" if conf is None else conf.get("n5"))
+    n6_default = StringVar()
+    n6_default.set("" if conf is None else conf.get("n6"))
+    n7_default = StringVar()
+    n7_default.set("" if conf is None else conf.get("n7"))
+    n8_default = StringVar()
+    n8_default.set("" if conf is None else conf.get("n8"))
+    n9_default = StringVar()
+    n9_default.set("" if conf is None else conf.get("n9"))
+    n10_default = StringVar()
+    n10_default.set("" if conf is None else conf.get("n10"))
+    m1_default = StringVar()
+    m1_default.set("" if conf is None else conf.get("m1"))
+    m2_default = StringVar()
+    m2_default.set("" if conf is None else conf.get("m2"))
+    m3_default = StringVar()
+    m3_default.set("" if conf is None else conf.get("m3"))
+    m4_default = StringVar()
+    m4_default.set("" if conf is None else conf.get("m4"))
+
+    def btn1_clear_all():
+        """
+        清楚所有栏数据
+        :return:
+        """
+        for _ in [e1, e2, e3, e4, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, m1, m2, m3, m4]:
+            _.delete(0, len(_.get()))
+
+    def btn2_save_and_exit():
+        """
+        保存输入并退出
+        :return:
+        """
+        d = dict(e1=e1_default.get(), e2=e2_default.get(), e3=e3_default.get(), e4=e4_default.get(),
+                 n1=n1_default.get(),
+                 n2=n2_default.get(), n3=n3_default.get(), n4=n4_default.get(), n5=n5_default.get(),
+                 n6=n6_default.get(),
+                 n7=n7_default.get(), n8=n8_default.get(), n9=n9_default.get(), n10=n10_default.get(),
+                 m1=m1_default.get(),
+                 m2=m2_default.get(), m3=m3_default.get(), m4=m4_default.get())
+        # 保存配置
+        with open(conf_file_path, "w") as f:
+            f.write(json.dumps(d))
+
+        root.destroy()
+        root.quit()
+
+    # 生成主管列
+    ttk.Label(root, text="经理名:", width=15).grid(row=0, sticky="W")
+    e1 = ttk.Entry(root, width=20, textvariable=e1_default)
+    e1.grid(row=0, column=1, sticky="E")
+
+    ttk.Label(root, text="副经理名:", width=15).grid(row=1, sticky="W")
+    e2 = ttk.Entry(root, width=20, textvariable=e2_default)
+    e2.grid(row=1, column=1, sticky="E")
+
+    ttk.Label(root, text="主管名1:", width=15).grid(row=2, sticky="W")
+    e3 = ttk.Entry(root, width=20, textvariable=e3_default)
+    e3.grid(row=2, column=1, sticky="E")
+
+    ttk.Label(root, text="主管名2:", width=15).grid(row=3, sticky="W")
+    e4 = ttk.Entry(root, width=20, textvariable=e4_default)
+    e4.grid(row=3, column=1, sticky="E")
+
+    # 生成员工列
+    ttk.Label(root, text="\t员工名1:", width=20).grid(row=0, column=2, sticky="W")
+    n1 = ttk.Entry(root, width=20, textvariable=n1_default)
+    n1.grid(row=0, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名2:", width=20).grid(row=1, column=2, sticky="W")
+    n2 = ttk.Entry(root, width=20, textvariable=n2_default)
+    n2.grid(row=1, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名3:", width=20).grid(row=2, column=2, sticky="W")
+    n3 = ttk.Entry(root, width=20, textvariable=n3_default)
+    n3.grid(row=2, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名4:", width=20).grid(row=3, column=2, sticky="W")
+    n4 = ttk.Entry(root, width=20, textvariable=n4_default)
+    n4.grid(row=3, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名5:", width=20).grid(row=4, column=2, sticky="W")
+    n5 = ttk.Entry(root, width=20, textvariable=n5_default)
+    n5.grid(row=4, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名6:", width=20).grid(row=5, column=2, sticky="W")
+    n6 = ttk.Entry(root, width=20, textvariable=n6_default)
+    n6.grid(row=5, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名7:", width=20).grid(row=6, column=2, sticky="W")
+    n7 = ttk.Entry(root, width=20, textvariable=n7_default)
+    n7.grid(row=6, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名8:", width=20).grid(row=7, column=2, sticky="W")
+    n8 = ttk.Entry(root, width=20, textvariable=n8_default)
+    n8.grid(row=7, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名9:", width=20).grid(row=8, column=2, sticky="W")
+    n9 = ttk.Entry(root, width=20, textvariable=n9_default)
+    n9.grid(row=8, column=4, sticky="E")
+
+    ttk.Label(root, text="\t员工名10:", width=20).grid(row=9, column=2, sticky="W")
+    n10 = ttk.Entry(root, width=20, textvariable=n10_default)
+    n10.grid(row=9, column=4, sticky="E")
+
+    ttk.Label(root, text="\t新员工名1:", width=20).grid(row=0, column=6, sticky="W")
+    m1 = ttk.Entry(root, width=20, textvariable=m1_default)
+    m1.grid(row=0, column=8, sticky="E")
+
+    ttk.Label(root, text="\t新员工名2:", width=20).grid(row=1, column=6, sticky="W")
+    m2 = ttk.Entry(root, width=20, textvariable=m2_default)
+    m2.grid(row=1, column=8, sticky="E")
+
+    ttk.Label(root, text="\t新员工名3:", width=20).grid(row=2, column=6, sticky="W")
+    m3 = ttk.Entry(root, width=20, textvariable=m3_default)
+    m3.grid(row=2, column=8, sticky="E")
+
+    ttk.Label(root, text="\t新员工名4:", width=20).grid(row=3, column=6, sticky="W")
+    m4 = ttk.Entry(root, width=20, textvariable=m4_default)
+    m4.grid(row=3, column=8, sticky="E")
+
+    ttk.Button(root, text="清空所有栏", width=20, command=lambda: btn1_clear_all()).grid(row=9, column=0, sticky="W")
+    ttk.Button(root, text="保存并退出", width=20, command=lambda: btn2_save_and_exit()).grid(row=9, column=8, sticky="W")
+
+    # 居中
+    root.update()  # 刷新窗口，用來獲取窗口大小
+    window_left_top_point = (root.winfo_screenwidth() // 2 - root.winfo_width() // 2,
+                             root.winfo_screenheight() // 2 - root.winfo_height() // 2)
+    root.geometry('+{0}+{1}'.format(*window_left_top_point))
+    root.update()
+    root.mainloop()
+
+
+"""
+name_list填写值，请区分主管列，员工列，新人列
+对应name_list = [[主管列],员工列,[新人列]]
+没有新人，可以不用加最后的中括号，例如[[主管],员工]
+"""
+gui_for_create_online_table()
+name_list = get_name_list()
+if len(name_list) > 1:
     result = write_online_table(name_list)
     change_over_work_value(result[0], result[-1])
