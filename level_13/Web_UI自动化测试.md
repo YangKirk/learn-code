@@ -104,9 +104,6 @@ driver.page_source	# 属性，不用加括号（）
 # 获取窗口名称
 driver.name		# 属性，不用加括号（）
 
-# 获取节点上的文本信息
-driver.text
-
 # 刷新页面
 driver.refresh()
 
@@ -115,12 +112,6 @@ driver.title	# 属性，不用加括号（）
 
 # 获取当前页面url地址
 driver.current_url		# 属性，不用加括号()
-
-# 获取元素的属性信息
-driver.get_attribute(name)
-
-# 判断元素是否显示出来
-driver.is_displayed		# 属性，不用加括号()
 
 # 获取当前页面截图
 driver.get_screenshot_as_file(path)		# 不写path默认保存在当前路径下
@@ -145,15 +136,6 @@ print(driver.page_source)  # 打印源码
 driver.find_element('id', 'kw').click()  # 定位到属性id值为kw的元素并点击它
 driver.find_element('id', 'kw').clear()  # 定位到属性id值为kw的元素并清空里面的内容
 driver.find_element('id', 'kw').send_keys("深空之眼")  # 定位到id为kw的元素并输入深空之眼
-
-# 定位到属性id值为su的元素并获取此元素的value值
-print(driver.find_element('id', 'su').get_attribute("value"))  
-
-# 定位到超链接text描述为贴吧的元素并打印此元素的text值
-print(driver.find_element('link text', '贴吧').text)  
-
-# 定位到属性id值为form的元素并判断此元素是否为隐藏，返回True or False
-print(driver.find_element('id', 'form').is_displayed())  
 
 driver.find_element('id', 'su').click()  # 定位到属性id值为su的元素并点击它
 
@@ -403,3 +385,368 @@ driver.find_element('partial link text', '直').click()
 ## 1.5.元素定位总结
 
 ![image-20220507203237269](Web_UI自动化测试.assets/image-20220507203237269.png)
+
+
+
+## 2.元素操作(Operate)
+
+### a.常见元素操作API
+
+```python
+# 清空文本框内的text
+clear()
+
+# 点击操作
+click()
+
+# 传入指令或发送内容
+send_keys()
+
+# 获取节点上的文本信息
+text	# 属性，无需括号()
+
+# 获取元素的指定属性的值
+get_attribute(属性名)
+
+# 判断元素是否显示出来
+is_displayed()
+```
+
+- #### 代码举例
+
+  ```python
+  driver.get("https://www.baidu.com")
+  
+  driver.find_element('id', 'kw').click()     # 点击操作
+  
+  driver.find_element('id', 'kw').clear()     # 清空文本框内容
+  
+  driver.find_element('id', 'kw').send_keys('Python')     # 输入字符Python
+  
+  # 定位到属性id值为su的元素并获取此元素的value值
+  print(driver.find_element('id', 'su').get_attribute("value"))  
+  
+  # 定位到超链接text描述为贴吧的元素并打印此元素的text值
+  print(driver.find_element('link text', '贴吧').text)  
+  
+  # 定位到属性id值为form的元素并判断此元素是否为隐藏，返回True or False
+  print(driver.find_element('id', 'form').is_displayed())  
+  ```
+
+
+
+### b.自动化测试三大等待操作
+
+- ### 强制等待/固定等待
+
+  ![image-20220510201303872](Web_UI自动化测试.assets/image-20220510201303872.png)
+
+
+
+- ### 隐式等待/全局等待
+
+  ![image-20220510201406167](Web_UI自动化测试.assets/image-20220510201406167.png)
+
+
+
+- ### 显示等待
+
+  ![image-20220510201455001](Web_UI自动化测试.assets/image-20220510201455001.png)
+
+  - ### EC常用方法
+
+    ```python
+    # 判断当前页面的title是否精确等于预期
+    title_is(strtitle)
+    
+    # 判断当前页面的title是否包含指定字符串
+    title_contains(strtitle)
+    
+    # 判断某个元素是否被加到了dom树里，并不代表该元素一定可见
+    presence_of_element_located(locator)
+    
+    # 判断某个元素是否可见,可见代表元素非隐藏，且元素的宽和高都不等于0
+    visibility_of_element_located(locator)
+    
+    # 判断某个元素是否不可见
+    invisibility_of_element_located(locator)
+    
+    # 判断某个元素中是否可见并且是enable的，这样的话才叫clickable
+    element_to_be_clickable(locator)
+    
+    # 判断某个元素中的text是否包含了预期的字符串
+    text_to_be_present_in_element(locator)
+    ```
+
+    ```python
+  # 代码举例
+    def func1():
+        driver.get("https://www.baidu.com")
+        # 判断当前页面的title是否精确等于预期
+        WebDriverWait(driver, 10).until(ec.title_is("百度一下，你就知道"))  
+      driver.find_element('id', 'kw').send_keys("正确")
+    
+    
+    def func2():
+        driver.get("https://www.baidu.com")
+        # 判断当前页面的title是否包含指定字符串
+        WebDriverWait(driver, 5).until(ec.title_contains("百度一下"))  
+        driver.find_element('id', 'kw').send_keys("正确")
+    
+    
+    def func3():
+        driver.get("https://www.bilibili.com")
+        # 等待标题哔哩哔哩出现
+        WebDriverWait(driver, 5).until(ec.title_contains("哔哩哔哩")) 
+        
+        # 滑动页面滚轮从坐标0到300
+        driver.execute_script("window.scrollTo(0,300);")  
+        
+        # 判断某个元素是否被加到了dom树里，并不代表该元素一定可见
+        WebDriverWait(driver, 10).until(ec.presence_of_element_located(('class name', 'login-tip')))  # 判断悬浮登陆框是否出现
+        
+        driver.find_element('class name', 'login-tip').click()
+    
+    
+    def func4():
+        driver.get("http://www.baidu.com")
+        
+        # 判断某个元素是否可见,可见代表元素非隐藏，且元素的宽和高都不等于0，时间到了仍不可见报错
+        WebDriverWait(driver, 5).until(ec.visibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
+        
+        driver.find_element('link text', '高级搜索').click()
+    
+    
+    def func5():
+        driver.get("https://www.baidu.com")
+        
+        # 判断某个元素是否不可见,在等待时间内可见则报错
+        WebDriverWait(driver, 10).until(ec.invisibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
+    
+    
+    def func6():
+        driver.get("https://www.baidu.com")
+        
+        # 判断某个元素中是否可见并且是enable的，这样的话才叫clickable
+        WebDriverWait(driver, 5).until(ec.element_to_be_clickable(('link text', '高级搜索')))
+        
+        driver.find_element('link text', '高级搜索').click()
+    
+    
+    def func7():
+        driver.get("https://www.baidu.com")
+        
+        driver.find_element('id', 'kw').send_keys("Python")
+        
+        # 判断某个元素中的text是否包含了预期的字符串
+        WebDriverWait(driver, 5).until(
+            ec.text_to_be_present_in_element(('xpath', '//form[@id="form"]/div/ul/li[1]'), "是什么意思"))
+        
+        driver.find_element('xpath', '//form[@id="form"]/div/ul/li[1]').click()
+    ```
+  
+
+
+
+### c.元素操作进阶
+
+- ### 复选框常见操作
+
+  ```python
+  is_displayed()	# 判断元素是否被隐藏
+  
+  is_enabled()	# 判断元素是否被使用
+  
+  is_selected()	# 判断元素是否被选中
+  
+  ```
+
+  ```python
+  # 代码举例
+  def func8():
+      driver.get("https://flight.qunar.com/")
+      
+      # 判断元素是否被选中
+      print(driver.find_element('id', 'searchTypeRnd').is_selected())  
+       # 判断元素是否被使用
+      print(driver.find_element('id', 'searchTypeRnd').is_enabled()) 
+      # 判断元素是否被隐藏
+      print(driver.find_element('id', 'searchTypeSng').is_displayed())  
+  
+  ```
+
+
+
+- ### 发送组合按键
+
+  ```python
+  from selenium.webdriver.common.keys import Keys		# 导入 Keys包
+  
+  def func9():
+      driver.get("https://www.baidu.com")
+      # 按住SHIFT键输入python
+      driver.find_element("id", "kw").send_keys(Keys.SHIFT, "python")
+      time.sleep(1)
+      # 输入python 50次
+      driver.find_element("id", "kw").send_keys("python" * 50)
+      time.sleep(1)
+      # 按住control键点击a键
+      driver.find_element("id", "kw").send_keys(Keys.CONTROL, "a")
+      time.sleep(1)
+      # 点击delete键
+      driver.find_element("id", "kw").send_keys(Keys.DELETE)
+  
+  ```
+
+
+
+- ### 下拉列表常见操作
+
+  ```python
+  from selenium.webdriver.support.ui import Select
+  
+  driver.get("http://www.fanyunedu.com:5000/general/web")
+  
+  # 通过序号选择下拉框的值
+  Select(driver.find_element('tag name', 'select')).select_by_index(1)
+  time.sleep(1)
+  
+  # 通过value属性选择下拉框的值
+  Select(driver.find_element('tag name', 'select')).select_by_value("sh")
+  time.sleep(1)
+  
+  # 通过下拉框的text文字选择
+  Select(driver.find_element('tag name', 'select')).select_by_visible_text("北京")
+  ```
+
+
+
+### d. Frame嵌套应用操作
+
+![image-20220511210549164](Web_UI自动化测试.assets/image-20220511210549164.png)
+
+```python
+from selenium import webdriver
+
+# 切换frame
+# 使用 switch_to.frame()方法，把当前定位的主体切换到B frame里
+switch_to.frame(driver.find_element('xpath','/html/body/div[4]/iframe'))
+
+# 使用 switch_to.default_content()方法，从B frame切换回A frame
+switch_to.default_content()
+```
+
+```python
+# 代码举例
+def func11():
+    driver.get("https://mail.qq.com")
+    time.sleep(2)
+
+    # 切换到iframe
+    driver.switch_to.frame(driver.find_element('name', 'login_frame'))
+
+    driver.find_element('id', 'u').clear()
+    driver.find_element('id', 'u').send_keys('888888')
+
+    # 切换回原本的frame
+    driver.switch_to.default_content()
+    driver.find_element('link text', '关于腾讯').click()
+```
+
+
+
+### e.文件上传操作(直接使用send_keys)
+
+```python
+def func12():
+    driver.get("http://www.fanyunedu.com:5000/general/web")
+    
+    # 利用input标签的type属性为file，直接用send_keys()方法上传文件，但注意文件必须是使用绝对路径
+    driver.find_element('xpath', '//input[@type="file"]').send_keys(
+        r"/home/kirk/Desktop/learn-code/level_13/selenium_learning_img.png")
+```
+
+
+
+### f.多窗口来回切换操作(使用switch_to().window(handle)来切换窗口)
+
+```python
+from selenium import webdriver
+
+curhandle = driver.current_window_handle	# 获取并记录当前窗口
+allhandles = driver.window_handles	#获取所有窗口
+for handle in allhandles:
+    if handle != curhandle:	# 不是当前窗口就进行切换，并继续后续操作
+        driver.switch_to().window(handle)
+        driver.find_element('id', 'xxx').click()
+        driver.close()
+driver.switch_to.window(curhandle)	# 切换回原来的窗口，继续进行其他操作
+...
+```
+
+```python
+# 代码举例
+def func13():
+    driver.get("http://www.fanyunedu.com:5000/general/web")
+
+    # 记录当前窗口
+    old_window = driver.current_window_handle  # 保留当前窗口句柄
+    driver.find_element('link text', '打开百度').click()
+    time.sleep(1)
+
+    # 切换到百度的窗口上
+    driver.switch_to.window(driver.window_handles[2])  # 之前的窗口就是0,下一个窗口就是1依次计数
+    driver.find_element('id', 'kw').send_keys('python')
+    time.sleep(2)
+
+    # 切换回原来的窗口
+    driver.switch_to.window(old_window)
+    driver.find_element('name', 'alert1').click()
+```
+
+
+
+### g. 悬浮框操作
+
+```python
+from selenium.webserver import ActionChains
+
+# 通过ActionChains的move_to_element().perform()方法控制鼠标移动
+ActionChains(driver).move_to_element(element).perform()
+```
+
+
+
+```python
+# 代码举例
+def func14():
+    driver.get("https://www.baidu.com")
+    item = driver.find_element('id', "s-usersetting-top")
+    ActionChains(driver).move_to_element(item).perform()  # 模拟鼠标移动操作
+    driver.find_element('link text', '高级搜索').click()
+
+def func15():
+    driver.get("https://www.baidu.com")
+    driver.find_element('id', 'kw').send_keys('python')	# 搜索栏的悬浮框
+    
+    # 把悬浮框中的内容通过想同的class属性值筛选出来
+    menus = driver.find_elements('class name', 'bdsug-overflow')    
+    for menu in menus:
+        print(menu.text)    # 遍历打印悬浮框中内容的text文本
+
+    menus[5].click()    # 通过序号直接点击对应元素
+
+
+def func16():
+    driver.get("https://www.qq.com")
+    # 模拟鼠标移动操作
+    ActionChains(driver).move_to_element(driver.find_element('class name', 'more-txt')).perform()
+    
+    driver.find_element('link text', '车型').click()
+```
+
+
+
+### h. 验证码处理操作
+
+![image-20220511220031920](Web_UI自动化测试.assets/image-20220511220031920.png)

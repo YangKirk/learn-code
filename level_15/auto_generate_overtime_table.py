@@ -285,7 +285,7 @@ def get_name_list():
 
 def gui_for_create_online_table():
     root = Tk()
-    root.title('值班表生成工具(按提示填好名字保存退出即可)')
+    root.title('值班表生成工具(按提示填好名字保存退出即可)')    # UI界面标题
 
     conf = None
     # 如果json配置文件存在就读取字典到conf

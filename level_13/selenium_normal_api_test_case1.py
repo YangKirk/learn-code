@@ -44,9 +44,6 @@ print(driver.page_source)  # 打印源码
 driver.find_element('id', 'kw').click()  # 定位到属性id值为kw的元素并点击它
 driver.find_element('id', 'kw').clear()  # 定位到属性id值为kw的元素并清空里面的内容
 driver.find_element('id', 'kw').send_keys("深空之眼")  # 定位到id为kw的元素并输入深空之眼
-print(driver.find_element('id', 'su').get_attribute("value"))  # 定位到属性id值为su的元素并获取此元素的value值
-print(driver.find_element('link text', '贴吧').text)  # 定位到超链接text描述为贴吧的元素并打印此元素的text值
-print(driver.find_element('id', 'form').is_displayed())  # 定位到属性id值为form的元素并判断此元素是否为隐藏，返回True or False
 driver.find_element('id', 'su').click()  # 定位到属性id值为su的元素并点击它
 
 print(driver.name)  # 打印窗口名
