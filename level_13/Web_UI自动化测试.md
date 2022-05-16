@@ -479,21 +479,23 @@ is_displayed()
     ```
 
     ```python
+    
+    ```
   # 代码举例
     def func1():
         driver.get("https://www.baidu.com")
         # 判断当前页面的title是否精确等于预期
         WebDriverWait(driver, 10).until(ec.title_is("百度一下，你就知道"))  
       driver.find_element('id', 'kw').send_keys("正确")
-    
-    
+  
+  
     def func2():
         driver.get("https://www.baidu.com")
         # 判断当前页面的title是否包含指定字符串
         WebDriverWait(driver, 5).until(ec.title_contains("百度一下"))  
         driver.find_element('id', 'kw').send_keys("正确")
-    
-    
+  
+  
     def func3():
         driver.get("https://www.bilibili.com")
         # 等待标题哔哩哔哩出现
@@ -506,8 +508,13 @@ is_displayed()
         WebDriverWait(driver, 10).until(ec.presence_of_element_located(('class name', 'login-tip')))  # 判断悬浮登陆框是否出现
         
         driver.find_element('class name', 'login-tip').click()
+  
     
-    
+  
+  
+  
+  
+  
     def func4():
         driver.get("http://www.baidu.com")
         
@@ -515,15 +522,25 @@ is_displayed()
         WebDriverWait(driver, 5).until(ec.visibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
         
         driver.find_element('link text', '高级搜索').click()
+  
     
-    
+  
+  
+  
+  
+  
     def func5():
         driver.get("https://www.baidu.com")
         
         # 判断某个元素是否不可见,在等待时间内可见则报错
         WebDriverWait(driver, 10).until(ec.invisibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
+  
     
-    
+  
+  
+  
+  
+  
     def func6():
         driver.get("https://www.baidu.com")
         
@@ -531,8 +548,13 @@ is_displayed()
         WebDriverWait(driver, 5).until(ec.element_to_be_clickable(('link text', '高级搜索')))
         
         driver.find_element('link text', '高级搜索').click()
+  
     
-    
+  
+  
+  
+  
+  
     def func7():
         driver.get("https://www.baidu.com")
         
@@ -545,6 +567,7 @@ is_displayed()
         driver.find_element('xpath', '//form[@id="form"]/div/ul/li[1]').click()
     ```
   
+    ```
 
 
 
@@ -750,3 +773,447 @@ def func16():
 ### h. 验证码处理操作
 
 ![image-20220511220031920](Web_UI自动化测试.assets/image-20220511220031920.png)
+
+
+
+## 3.结果断言(Verificate)----Unittest框架
+
+### a.  Unittest 框架是什么？为什么要使用unittest框架？
+
+- #### 是一个通用的测试框架，用于管理测试脚本项目和执行。
+
+
+
+### b.通过unittest框架创建测试
+
+#### 	(1). 必须继承于unittest.TestCase类
+
+```python
+import unittest
+
+class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
+```
+
+
+
+#### 	(2). 可以定义setUp()和tearDown()方法进行初始化, 也可以使用setUpClass()和tearDownClass()来进行初始化
+
+```python
+    def setUp(self) -> None:	# 每个测试方法执行前执行一次
+        print("这是每一个test case开始的初始化方法")
+
+    def tearDown(self) -> None:		# 每个测试方法执行结束后执行一次
+        print("这是每一个test case结束的初始化方法\n")
+    
+    @classmethod
+    def setUpClass(cls):	# 整个测试执行前执行一次
+        print("这是setUpClass方法，优先级在setUp方法之前")
+
+    @classmethod
+    def tearDownClass(cls) -> None:		# 整个测试执行结束后执行一次
+        print("这是tearDownClass方法，优先级在最后的最后，所有测试结束以后执行")
+   
+```
+
+
+
+#### 	(3). 所有测试方法必须以test开头(例如testFunc1或者test_Func1等), 测试方法会在运行时自动被调用
+
+```python
+	@staticmethod
+    def test_case2():
+        print("这是test_case2方法")
+
+    @staticmethod
+    def testLogin():
+        print("这是testLogin方法")
+
+    @staticmethod
+    def testBogin():
+        print("这是test Bogin方法")
+
+    @staticmethod
+    def test_case1():
+        print("这是test_case1方法")
+```
+
+
+
+#### 	(4). 可以pycharm自带的unittest框架运行，也可以以普通的py文件方式运行
+
+- ### 以python自带的unittest框架来运行测试类，显示Run 'Unittest for unit....'
+
+  ![image-20220515181220246](Web_UI自动化测试.assets/image-20220515181220246.png)
+
+  - ### 设置为以python自带的unittest框架来运行测试类
+
+    ![image-20220515190133827](Web_UI自动化测试.assets/image-20220515190133827.png)
+
+  
+
+  - #### 以python自带的unittest框架来运行时，只会执行当前py文件中继承了unittest.TestCase类的测试类，并不会执行其他的代码语句
+
+    ![image-20220515190433124](Web_UI自动化测试.assets/image-20220515190433124.png)
+
+
+
+- #### 以普通py文件方式运行需要在Run/Debug Configurations中设置正确的Script path
+
+  ![image-20220515185029529](Web_UI自动化测试.assets/image-20220515185029529.png)
+
+  ![image-20220515185301974](Web_UI自动化测试.assets/image-20220515185301974.png)
+
+  - ### 以py文件来运行时，会执行当前py文件中if __name__ == "__main__":语句下的所有代码
+
+    ![image-20220515190813794](Web_UI自动化测试.assets/image-20220515190813794.png)
+
+
+
+### c.通过unittest框架添加断言(<u>断言结果为PASS则输出符号'.'/Fail则输出符号'F'/有语法错误输出‘E’</u>)
+
+- ### 常见断言语句
+
+  ```python
+  assertIn('d', 'abc')  # 判断d是否在abc中，不在就会报错
+  
+  assertNotIn('d', 'abc')  # 判断d是否不在abc中，在就会报错
+  
+  assertEqual(1, 1)  # 判断两个元素是否相等,不相等会报错
+  
+  assertNotEqual(1, 2)  # 判断两个元素是否不相等,相等会报错
+  
+  assertTrue(1)  # 判断传入的元素是否为True,不为True则报错
+  
+  assertFalse([])  # 判断传入的元素是否为False，不为False报错
+  ```
+
+  ```python
+  # 代码举例
+  import unittest
+  
+  
+  class TestAssert(unittest.TestCase):
+  
+          def testFunc2(self):
+          self.func1()    # 在测试方法中调用一个普通方法
+          print("这是一个测试assertIn的方法")
+          self.assertIn('d', 'abc')  # 判断d是否在abc中，不在就会报错
+          print("这句话不会被执行")   # 断言测试结果为Fail，则后续语句不会被执行
+  
+      def testFunc1(self):
+          print("这是一个测试assertNotIn的方法")
+          self.assertNotIn('d', 'abc')  # 判断d是否不在abc中，在就会报错
+          print("这句话可以执行")    # 断言测试结果为Pass，则后续语句会被执行
+  
+      def testFunc3(self):
+          print("这是一个测试assertEqual的方法")
+          self.assertEqual(1, 1)  # 判断两个元素是否相等,不相等会报错
+  
+      def testFunc4(self):
+          print("这是一个测试assertNotEqual的方法")
+          self.assertNotEqual(1, 2)  # 判断两个元素是否不相等,相等会报错
+  
+      def testFunc5(self):
+          print("这是一个测试assertTrue的方法")
+          self.assertTrue(1)  # 判断传入的元素是否为True,不为True则报错
+  
+      def testFunc6(self):
+          print("这是一个测试assertFalse的方法")
+          self.assertFalse([])  # 判断传入的元素是否为False，不为False报错
+  
+      @staticmethod
+      def func1():
+          print("这是一个普通方法，不是测试方法,通过测试方法内部调用执行")
+  ```
+
+  ![image-20220515193235042](Web_UI自动化测试.assets/image-20220515193235042.png)
+
+
+
+### d. 通过unittest.TestLoader类方法对脚本进行管理
+
+![image-20220515201243837](Web_UI自动化测试.assets/image-20220515201243837.png)
+
+- ### unittest.TestLoader类常见方法
+
+  - #### 通过loadTestsFromTestCase()方法管理test case
+
+    ```python
+    from level_13.unittest_learn.reg.stringtests import StringTests
+    from level_13.unittest_learn.reg.numbertests import NumberTests
+    import unittest
+    
+    if __name__ == '__main__':
+        # 通过unittest.defaultTestLoader.loadTestsFromTestCase()管理test case
+        st = unittest.defaultTestLoader.loadTestsFromTestCase(StringTests)
+        nt = unittest.defaultTestLoader.loadTestsFromTestCase(NumberTests)
+        # 将test case的实例通过unittest.TestSuite实例化为一个 test suite
+        suite = unittest.TestSuite([st, nt])
+    
+        # 通过unittest.TextTestRunner().run()方法运行suite
+        unittest.TextTestRunner().run(suite)
+    ```
+
+  
+
+  - #### 通过loadTestsFromModule()方法管理test case
+
+    ```python
+    from level_13.unittest_learn.reg import stringtests as st, numbertests as nu
+    import unittest
+    
+    if __name__ == '__main__':
+        names = [st, nu]
+        modules = []
+    
+        for item in names:
+            # 通过unittest.defaultTestLoader.loadTestsFromModule()方法管理test case
+            module = unittest.defaultTestLoader.loadTestsFromModule(st)
+            modules.append(module)
+        
+        suite = unittest.TestSuite(modules)
+        unittest.TextTestRunner().run(suite)
+    ```
+
+  
+
+  - #### 通过loadTestsFromNames()方法管理test case
+
+    - #### 方法一
+
+      ```python
+      import unittest
+      
+      if __name__ == '__main__':
+          # 方法一
+          # 方法名最好写绝对路径或者不会变动的相对路径
+          # names = ['level_13.unittest_learn.reg.numbertests.NumberTests.testSub',
+          #          'level_13.unittest_learn.reg.stringtests.StringTests.testStr1']
+          names = ['reg.numbertests.NumberTests.testSub',
+                   'reg.stringtests.StringTests.testStr1']
+          # 通过unittest.defaultTestLoader.loadTestsFromNames()方法管理test case
+          name_test = unittest.defaultTestLoader.loadTestsFromNames(names)
+          suite = unittest.TestSuite([name_test])
+          unittest.TextTestRunner().run(suite)
+      ```
+
+    - #### 方法二
+
+      ```python
+      import unittest
+      
+      def getFullTestCaseName(names):
+          """
+          获取符合条件的test case的名称，通常用于过滤smoke/sys/reg等测试
+          :param names: 接收通过unittest.defaultTestLoader.getTestCaseNames()方法获取测试类中的test case名称列表
+          :return: 符合条件的test case名称列表 --> return List
+          """
+          full_names = []
+          for item in names:
+              # 过滤条件，test case的名称中是否包含某些字符
+              if 'Sub' in item:   
+                  # 添加前缀路径
+                  full_names.append('reg.numbertests.NumberTests.' + item)   
+      
+          return full_names
+      
+      
+      if __name__ == '__main__':
+          # 方法二
+          from level_13.unittest_learn.reg.numbertests import NumberTests
+      
+          # 通过unittest.defaultTestLoader.getTestCaseNames()方法获取测试类中的test case名称列表
+          names_ = unittest.defaultTestLoader.getTestCaseNames(NumberTests)
+          # 定义并传入getFullTestCaseName方法，返回符合条件的test case 名称列表
+          name_test = unittest.defaultTestLoader.loadTestsFromNames(getFullTestCaseName(names_))
+          
+          suite = unittest.TestSuite([name_test])
+          
+          unittest.TextTestRunner().run(suite)
+      ```
+  
+      
+    
+  - #### 通过discover()方法管理test case
+  
+    - #### 需要先将所有的脚本文件分类存放
+  
+      ![image-20220516220759604](Web_UI自动化测试.assets/image-20220516220759604.png)
+  
+    ```python
+    import unittest
+    
+    if __name__ == '__main__':
+        # 通过discover()方法运行reg回归测试脚本
+        dis = unittest.defaultTestLoader.discover(r'./reg', pattern='*.py')
+        suite = unittest.TestSuite(dis)
+        unittest.TextTestRunner().run(suite)
+    ```
+  
+    ```python
+    # 通过discover()方法运行所有路径下的test case
+    
+    import unittest
+    
+    
+    # 获取所有的test case
+    def get_all_cases():
+        for case_dir in ['reg', 'smoke', 'sys']:
+            dis_ = unittest.defaultTestLoader.discover(r'../unittest_learn/' + case_dir, pattern='*.py')
+            suite_ = unittest.TestSuite(dis_)
+        return suite_
+    
+    if __name__ == '__main__':
+        # 执行所有的test case(reg/smoke/sys)
+        unittest.TextTestRunner().run(get_all_cases())
+    ```
+
+
+
+## 4. selenium 自动化测试unittest 项目实战----百度的登陆测试
+
+```python
+# 代码范例
+import json
+import os
+import sys
+import time
+
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+import unittest
+
+if getattr(sys, 'frozen', False):
+    current_path = os.path.dirname(sys.executable)
+else:
+    current_path = os.path.dirname(os.path.realpath(__file__))
+
+config_json_file_path = os.path.join(current_path, 'smoke_test_baidu_login.json')
+
+
+class BaiduLoginTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        if os.path.isfile(config_json_file_path):
+            with open(config_json_file_path, 'r',
+                      encoding='utf-8') as data:
+                conf = json.load(data)
+        self.username = conf.get("username")
+        self.password = conf.get("password")
+        self.driver = webdriver.Chrome()
+        self.url = 'https://www.baidu.com'
+        self.driver.implicitly_wait(20)
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+
+    def test_login_success(self):
+        """
+        测试当用户名和密码正确时，用户能够成功登陆到系统中
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        WebDriverWait(self.driver, 30).until(
+            ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), self.username))
+        login_name = self.driver.find_element('css selector', '.user-name.c-font-normal.c-color-t').text
+        self.assertEqual(login_name, self.username)
+
+    def test_login_failed_without_username(self):
+        """
+        测试没有输入用户名时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys('')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.assertEqual(login_msg, '请您输入手机号/用户名/邮箱')
+        time.sleep(1)
+
+    def test_login_failed_without_password(self):
+        """
+        测试没有输入密码时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys('')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.assertEqual(login_msg, '请您输入密码')
+        time.sleep(1)
+
+    def test_login_failed_with_error_username(self):
+        """
+        测试输入错误用户名时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username + 'x')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
+        time.sleep(1)
+
+    def test_login_failed_with_error_password(self):
+        """
+        测试输入错误密码时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password + 'x')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+
+
+
+
+# 五. Web自动化测试生成测试报告
+
+  
+
