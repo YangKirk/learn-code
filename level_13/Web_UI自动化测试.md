@@ -156,7 +156,7 @@ driver.quit()  # 关闭进程
 
 ### a. HTML页面基本结构
 
-```htm
+```html
 <html>
 	<head></head>	--> html文档头部区域，在页面中不可见
 	<body></body>	--> html文档内容部分，页面中可见
@@ -478,108 +478,68 @@ is_displayed()
     text_to_be_present_in_element(locator)
     ```
 
-    ```python
-    
-    ```
-  # 代码举例
-    def func1():
-        driver.get("https://www.baidu.com")
-        # 判断当前页面的title是否精确等于预期
-        WebDriverWait(driver, 10).until(ec.title_is("百度一下，你就知道"))  
+
+
+
+  - ### 代码举例
+
+  ```python
+  # 显示等待
+  def func1():
+      driver.get("https://www.baidu.com")
+      WebDriverWait(driver, 10).until(ec.title_is("百度一下，你就知道"))  # 判断当前页面的title是否精确等于预期
       driver.find_element('id', 'kw').send_keys("正确")
   
   
-    def func2():
-        driver.get("https://www.baidu.com")
-        # 判断当前页面的title是否包含指定字符串
-        WebDriverWait(driver, 5).until(ec.title_contains("百度一下"))  
-        driver.find_element('id', 'kw').send_keys("正确")
+  # 显示等待
+  def func2():
+      driver.get("https://www.baidu.com")
+      WebDriverWait(driver, 5).until(ec.title_contains("百度一下"))  # 判断当前页面的title是否包含指定字符串
+      driver.find_element('id', 'kw').send_keys("正确")
   
   
-    def func3():
-        driver.get("https://www.bilibili.com")
-        # 等待标题哔哩哔哩出现
-        WebDriverWait(driver, 5).until(ec.title_contains("哔哩哔哩")) 
-        
-        # 滑动页面滚轮从坐标0到300
-        driver.execute_script("window.scrollTo(0,300);")  
-        
-        # 判断某个元素是否被加到了dom树里，并不代表该元素一定可见
-        WebDriverWait(driver, 10).until(ec.presence_of_element_located(('class name', 'login-tip')))  # 判断悬浮登陆框是否出现
-        
-        driver.find_element('class name', 'login-tip').click()
+  # 显示等待
+  def func3():
+      driver.get("https://www.bilibili.com")
+      WebDriverWait(driver, 5).until(ec.title_contains("哔哩哔哩"))  # 等待标题哔哩哔哩出现
+      driver.execute_script("window.scrollTo(0,300);")  # 滑动页面滚轮从坐标0到300
+      # 判断某个元素是否被加到了dom树里，并不代表该元素一定可见
+      WebDriverWait(driver, 10).until(ec.presence_of_element_located(('class name', 'login-tip')))  # 判断悬浮登陆框是否出现
+      driver.find_element('class name', 'login-tip').click()
   
-    
-  
-  
-  
-  
+      
+  # 显示等待
+  def func4():
+      driver.get("http://www.baidu.com")
+      # 判断某个元素是否可见,可见代表元素非隐藏，且元素的宽和高都不等于0，时间到了仍不可见报错
+      WebDriverWait(driver, 5).until(ec.visibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
+      driver.find_element('link text', '高级搜索').click()
   
   
+  # 显示等待
+  def func5():
+      driver.get("https://www.baidu.com")
+      # 判断某个元素是否不可见,在等待时间内可见则报错
+      WebDriverWait(driver, 10).until(ec.invisibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
   
   
-    def func4():
-        driver.get("http://www.baidu.com")
-        
-        # 判断某个元素是否可见,可见代表元素非隐藏，且元素的宽和高都不等于0，时间到了仍不可见报错
-        WebDriverWait(driver, 5).until(ec.visibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
-        
-        driver.find_element('link text', '高级搜索').click()
-  
-    
+  # 显示等待
+  def func6():
+      driver.get("https://www.baidu.com")
+      # 判断某个元素中是否可见并且是enable的，这样的话才叫clickable
+      WebDriverWait(driver, 5).until(ec.element_to_be_clickable(('link text', '高级搜索')))
+      driver.find_element('link text', '高级搜索').click()
   
   
-  
-  
-  
-  
-  
-  
-    def func5():
-        driver.get("https://www.baidu.com")
-        
-        # 判断某个元素是否不可见,在等待时间内可见则报错
-        WebDriverWait(driver, 10).until(ec.invisibility_of_element_located(('link text', '高级搜索')))  # 需要以元组形式传入参数
-  
-    
-  
-  
-  
-  
-  
-  
-  
-  
-    def func6():
-        driver.get("https://www.baidu.com")
-        
-        # 判断某个元素中是否可见并且是enable的，这样的话才叫clickable
-        WebDriverWait(driver, 5).until(ec.element_to_be_clickable(('link text', '高级搜索')))
-        
-        driver.find_element('link text', '高级搜索').click()
-  
-    
-  
-  
-  
-  
-  
-  
-  
-  
-    def func7():
-        driver.get("https://www.baidu.com")
-        
-        driver.find_element('id', 'kw').send_keys("Python")
-        
-        # 判断某个元素中的text是否包含了预期的字符串
-        WebDriverWait(driver, 5).until(
-            ec.text_to_be_present_in_element(('xpath', '//form[@id="form"]/div/ul/li[1]'), "是什么意思"))
-        
-        driver.find_element('xpath', '//form[@id="form"]/div/ul/li[1]').click()
-    ```
-  
-    ```
+  # 显示等待
+  def func7():
+      driver.get("https://www.baidu.com")
+      driver.find_element('id', 'kw').send_keys("Python")
+      # 判断某个元素中的text是否包含了预期的字符串
+      WebDriverWait(driver, 5).until(
+          ec.text_to_be_present_in_element(('xpath', '//form[@id="form"]/div/ul/li[1]'), "是什么意思"))
+      driver.find_element('xpath', '//form[@id="form"]/div/ul/li[1]').click()
+  ```
 
 
 
@@ -788,17 +748,19 @@ def func16():
 
 
 
-## 3.结果断言(Verificate)----Unittest框架
+------
 
-### a.  Unittest 框架是什么？为什么要使用unittest框架？
+# 五.结果断言(Verificate)----Unittest框架
 
-- #### 是一个通用的测试框架，用于管理测试脚本项目和执行。
+## 1.  Unittest 框架是什么？为什么要使用unittest框架？
+
+- ## 是一个通用的测试框架，用于管理测试脚本项目和执行。
 
 
 
-### b.通过unittest框架创建测试
+## 2.通过unittest框架创建测试
 
-#### 	(1). 必须继承于unittest.TestCase类
+### 	(1). 必须继承于unittest.TestCase类
 
 ```python
 import unittest
@@ -808,7 +770,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-#### 	(2). 可以定义setUp()和tearDown()方法进行初始化, 也可以使用setUpClass()和tearDownClass()来进行初始化
+### 	(2). 可以定义setUp()和tearDown()方法进行初始化, 也可以使用setUpClass()和tearDownClass()来进行初始化
 
 ```python
     def setUp(self) -> None:	# 每个测试方法执行前执行一次
@@ -829,7 +791,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-#### 	(3). 所有测试方法必须以test开头(例如testFunc1或者test_Func1等), 测试方法会在运行时自动被调用
+### 	(3). 所有测试方法必须以test开头(例如testFunc1或者test_Func1等), 测试方法会在运行时自动被调用
 
 ```python
 	@staticmethod
@@ -851,7 +813,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-#### 	(4). 可以pycharm自带的unittest框架运行，也可以以普通的py文件方式运行
+### (4). 可以pycharm自带的unittest框架运行，也可以以普通的py文件方式运行
 
 - ### 以python自带的unittest框架来运行测试类，显示Run 'Unittest for unit....'
 
@@ -863,13 +825,13 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
   
 
-  - #### 以python自带的unittest框架来运行时，只会执行当前py文件中继承了unittest.TestCase类的测试类，并不会执行其他的代码语句
+  - ### 以python自带的unittest框架来运行时，只会执行当前py文件中继承了unittest.TestCase类的测试类，并不会执行其他的代码语句
 
     ![image-20220515190433124](Web_UI自动化测试.assets/image-20220515190433124.png)
 
 
 
-- #### 以普通py文件方式运行需要在Run/Debug Configurations中设置正确的Script path
+- ### 以普通py文件方式运行需要在Run/Debug Configurations中设置正确的Script path
 
   ![image-20220515185029529](Web_UI自动化测试.assets/image-20220515185029529.png)
 
@@ -881,7 +843,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-### c.通过unittest框架添加断言(<u>断言结果为PASS则输出符号'.'/Fail则输出符号'F'/有语法错误输出‘E’</u>)
+## 3.通过unittest框架添加断言(<u>断言结果为PASS则输出符号'.'/Fail则输出符号'F'/有语法错误输出‘E’</u>)
 
 - ### 常见断言语句
 
@@ -942,7 +904,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-### d. 通过unittest.TestLoader类方法对脚本进行管理
+## 4. 通过unittest.TestLoader类方法对脚本进行管理
 
 ![image-20220515201243837](Web_UI自动化测试.assets/image-20220515201243837.png)
 
@@ -1082,150 +1044,7 @@ class Demo(unittest.TestCase):  # 必须继承于unittest.TestCase类
 
 
 
-## 4. selenium 自动化测试unittest 项目实战----百度的登陆测试
-
-```python
-# 代码范例
-import json
-import os
-import sys
-import time
-
-from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-import unittest
-
-if getattr(sys, 'frozen', False):
-    current_path = os.path.dirname(sys.executable)
-else:
-    current_path = os.path.dirname(os.path.realpath(__file__))
-
-config_json_file_path = os.path.join(current_path, 'smoke_test_baidu_login.json')
-
-
-class BaiduLoginTest(unittest.TestCase):
-
-    def setUp(self) -> None:
-        if os.path.isfile(config_json_file_path):
-            with open(config_json_file_path, 'r',
-                      encoding='utf-8') as data:
-                conf = json.load(data)
-        self.username = conf.get("username")
-        self.password = conf.get("password")
-        self.driver = webdriver.Chrome()
-        self.url = 'https://www.baidu.com'
-        self.driver.implicitly_wait(20)
-
-    def tearDown(self) -> None:
-        self.driver.quit()
-
-    def test_login_success(self):
-        """
-        测试当用户名和密码正确时，用户能够成功登陆到系统中
-        :return:
-        """
-        self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
-        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        WebDriverWait(self.driver, 30).until(
-            ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), self.username))
-        login_name = self.driver.find_element('css selector', '.user-name.c-font-normal.c-color-t').text
-        self.assertEqual(login_name, self.username)
-
-    def test_login_failed_without_username(self):
-        """
-        测试没有输入用户名时，登陆失败的情况
-        :return:
-        """
-        self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
-        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys('')
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
-        self.assertEqual(login_msg, '请您输入手机号/用户名/邮箱')
-        time.sleep(1)
-
-    def test_login_failed_without_password(self):
-        """
-        测试没有输入密码时，登陆失败的情况
-        :return:
-        """
-        self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
-        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys('')
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
-        self.assertEqual(login_msg, '请您输入密码')
-        time.sleep(1)
-
-    def test_login_failed_with_error_username(self):
-        """
-        测试输入错误用户名时，登陆失败的情况
-        :return:
-        """
-        self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
-        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username + 'x')
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
-        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
-        time.sleep(1)
-
-    def test_login_failed_with_error_password(self):
-        """
-        测试输入错误密码时，登陆失败的情况
-        :return:
-        """
-        self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
-        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password + 'x')
-        time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
-        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
-        time.sleep(1)
-
-
-if __name__ == '__main__':
-    unittest.main()
-```
-
-
-
-
-
-# 五. Web自动化测试生成测试报告
+## 5. unittest自定义生成测试报告
 
 ![image-20220517181540919](Web_UI自动化测试.assets/image-20220517181540919.png)
 
@@ -1253,24 +1072,7 @@ if __name__ == '__main__':
 
 
 
-# 六.  Web自动化测试智能等待封装方法实例
-
-```python
-from selenium.common.exceptions import NoSuchElementException
-
-def find_element(self, locator: tuple):
-    try:
-        # 匿名函数的作用为接收元组型参数，并作为函数执行，返回定位到的元素
-        element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
-        return element
-    except NoSuchElementException as e:
-        print('Error details: {}'.format(e.args[0]))
-        raise e
-```
-
-
-
-# 七. Web自动化测试unittest框架中使用参数化(数据驱动)
+## 6. unittest框架中使用参数化(数据驱动)
 
 ```python
 # 先安装ddt包(重要)
@@ -1279,15 +1081,15 @@ pip install -i https://pypi.douban.com/simple ddt
 
 
 
-## 1.什么是参数化(数据驱动)
+### 1.什么是参数化(数据驱动)
 
-- ### 指利用不同测试数据来测试相同场景，为了提高代码重用性，增加代码效率而采用的一种代码编写方法，叫做参数化，也就是数据驱动。
+- #### 指利用不同测试数据来测试相同场景，为了提高代码重用性，增加代码效率而采用的一种代码编写方法，叫做参数化，也就是数据驱动。
 
-- ### 测试数据与测试业务分离
+- #### 测试数据与测试业务分离
 
 
 
-## 2.从函数中返回参数值
+### 2.从函数中返回参数值
 
 ```python
 # Util文件用于存放工具类函数
@@ -1433,7 +1235,7 @@ if __name__ == '__main__':
 
 
 
-## 3.从文件中返回参数值
+### 3.从文件中返回参数值
 
 ```python
 # 代码范例
@@ -1524,9 +1326,30 @@ if __name__ == '__main__':
 
 
 
-# 八. Web自动化测试unittest框架中断言失败后截图(使用自定义断言装饰器)
+------
 
-- ## 单例
+# 六. 异常处理(Except)
+
+## 1.  Selenium自动化测试智能等待封装方法实例
+
+```python
+from selenium.common.exceptions import NoSuchElementException
+
+def find_element(self, locator: tuple):
+    try:
+        # 匿名函数的作用为接收元组型参数，并作为函数执行，返回定位到的元素
+        element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
+        return element
+    except NoSuchElementException as e:
+        print('Error details: {}'.format(e.args[0]))
+        raise e
+```
+
+
+
+## 2. unittest框架中断言失败后截图(使用自定义断言装饰器)
+
+- ### 单例
 
 ```python
 # 代码举例
@@ -1566,7 +1389,7 @@ if __name__ == '__main__':
 
 
 
-- ## 集成(定义装饰器)
+- ### 集成(定义装饰器)
 
 ```python
 # 代码举例
@@ -1609,4 +1432,148 @@ class AssertTest(unittest.TestCase):
         self.driver.get(self.url)
         self.assertEqual(1, 2)
 ```
+
+
+
+------
+
+# 七. selenium 自动化测试unittest 项目实战----百度的登陆测试
+
+```python
+# 代码范例
+import json
+import os
+import sys
+import time
+
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+import unittest
+
+if getattr(sys, 'frozen', False):
+    current_path = os.path.dirname(sys.executable)
+else:
+    current_path = os.path.dirname(os.path.realpath(__file__))
+
+config_json_file_path = os.path.join(current_path, 'smoke_test_baidu_login.json')
+
+
+class BaiduLoginTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        if os.path.isfile(config_json_file_path):
+            with open(config_json_file_path, 'r',
+                      encoding='utf-8') as data:
+                conf = json.load(data)
+        self.username = conf.get("username")
+        self.password = conf.get("password")
+        self.driver = webdriver.Chrome()
+        self.url = 'https://www.baidu.com'
+        self.driver.implicitly_wait(20)
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+
+    def test_login_success(self):
+        """
+        测试当用户名和密码正确时，用户能够成功登陆到系统中
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        WebDriverWait(self.driver, 30).until(
+            ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), self.username))
+        login_name = self.driver.find_element('css selector', '.user-name.c-font-normal.c-color-t').text
+        self.assertEqual(login_name, self.username)
+
+    def test_login_failed_without_username(self):
+        """
+        测试没有输入用户名时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys('')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.assertEqual(login_msg, '请您输入手机号/用户名/邮箱')
+        time.sleep(1)
+
+    def test_login_failed_without_password(self):
+        """
+        测试没有输入密码时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys('')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.assertEqual(login_msg, '请您输入密码')
+        time.sleep(1)
+
+    def test_login_failed_with_error_username(self):
+        """
+        测试输入错误用户名时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username + 'x')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
+        time.sleep(1)
+
+    def test_login_failed_with_error_password(self):
+        """
+        测试输入错误密码时，登陆失败的情况
+        :return:
+        """
+        self.driver.get(self.url)
+        self.driver.find_element('id', 's-top-loginbtn').click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
+        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password + 'x')
+        time.sleep(1)
+        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
 
