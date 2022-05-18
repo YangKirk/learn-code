@@ -16,6 +16,7 @@ import sys
 import time
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import unittest
@@ -40,9 +41,18 @@ class BaiduLoginTest(unittest.TestCase):
         self.driver = webdriver.Chrome()
         self.url = 'https://www.baidu.com'
         self.driver.implicitly_wait(20)
+        self.imgs = []  # 用于保存截图
 
     def tearDown(self) -> None:
         self.driver.quit()
+
+    def find_element(self, locator: tuple):
+        try:
+            element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
+            return element
+        except NoSuchElementException as e:
+            print('Error details: {}'.format(e.args[0]))
+            raise e
 
     def test_login_success(self):
         """
@@ -50,18 +60,19 @@ class BaiduLoginTest(unittest.TestCase):
         :return:
         """
         self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
+        self.find_element(('id', 's-top-loginbtn')).click()
         WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(self.username)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(self.password)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
         WebDriverWait(self.driver, 30).until(
             ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), self.username))
-        login_name = self.driver.find_element('css selector', '.user-name.c-font-normal.c-color-t').text
+        login_name = self.find_element(('css selector', '.user-name.c-font-normal.c-color-t')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
         self.assertEqual(login_name, self.username)
 
     def test_login_failed_without_username(self):
@@ -70,16 +81,17 @@ class BaiduLoginTest(unittest.TestCase):
         :return:
         """
         self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
+        self.find_element(('id', 's-top-loginbtn')).click()
         WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys('')
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys('')
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(self.password)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('id', 'TANGRAM__PSP_11__error')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
         self.assertEqual(login_msg, '请您输入手机号/用户名/邮箱')
         time.sleep(1)
 
@@ -89,16 +101,17 @@ class BaiduLoginTest(unittest.TestCase):
         :return:
         """
         self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
+        self.find_element(('id', 's-top-loginbtn')).click()
         WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(self.username)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys('')
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys('')
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('id', 'TANGRAM__PSP_11__error').text
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('id', 'TANGRAM__PSP_11__error')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
         self.assertEqual(login_msg, '请您输入密码')
         time.sleep(1)
 
@@ -108,16 +121,17 @@ class BaiduLoginTest(unittest.TestCase):
         :return:
         """
         self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
+        self.find_element(('id', 's-top-loginbtn')).click()
         WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username + 'x')
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(self.username + 'x')
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(self.password)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
         self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
         time.sleep(1)
 
@@ -127,16 +141,17 @@ class BaiduLoginTest(unittest.TestCase):
         :return:
         """
         self.driver.get(self.url)
-        self.driver.find_element('id', 's-top-loginbtn').click()
+        self.find_element(('id', 's-top-loginbtn')).click()
         WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__userName').send_keys(self.username)
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(self.username)
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').clear()
-        self.driver.find_element('id', 'TANGRAM__PSP_11__password').send_keys(self.password + 'x')
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(self.password + 'x')
         time.sleep(1)
-        self.driver.find_element('id', 'TANGRAM__PSP_11__submit').click()
-        login_msg = self.driver.find_element('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]').text
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('xpath', '//*[contains(text(),"用户名或密码有误，请重新输入或")]')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
         self.assertEqual(login_msg, '用户名或密码有误，请重新输入或找回密码')
         time.sleep(1)
 

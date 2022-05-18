@@ -515,6 +515,9 @@ is_displayed()
   
   
   
+  
+  
+  
     def func4():
         driver.get("http://www.baidu.com")
         
@@ -524,6 +527,9 @@ is_displayed()
         driver.find_element('link text', '高级搜索').click()
   
     
+  
+  
+  
   
   
   
@@ -541,6 +547,9 @@ is_displayed()
   
   
   
+  
+  
+  
     def func6():
         driver.get("https://www.baidu.com")
         
@@ -550,6 +559,9 @@ is_displayed()
         driver.find_element('link text', '高级搜索').click()
   
     
+  
+  
+  
   
   
   
@@ -1215,5 +1227,386 @@ if __name__ == '__main__':
 
 # 五. Web自动化测试生成测试报告
 
-  
+![image-20220517181540919](Web_UI自动化测试.assets/image-20220517181540919.png)
+
+![image-20220518190041476](Web_UI自动化测试.assets/image-20220518190041476.png)
+
+```python
+# 代码举例
+from level_13.unittest_learn.smoke.smoke_test_baidu_login import BaiduLoginTest
+from HTMLTestRunnerCN import HTMLTestReportCN
+import unittest
+
+if __name__ == '__main__':
+    test1 = unittest.defaultTestLoader.loadTestsFromTestCase(BaiduLoginTest)
+    suite = unittest.TestSuite(test1)
+
+    runner = HTMLTestReportCN(
+        title='带截图的百度登陆测试报告',	# 标题
+        description='xxx软件测试报告v0.1',	# 描述
+        stream=open('sample_test_report.html', 'wb'),
+        verbosity=2,
+        tester='Kirk'	# 测试人员
+    )
+    runner.run(suite)
+```
+
+
+
+# 六.  Web自动化测试智能等待封装方法实例
+
+```python
+from selenium.common.exceptions import NoSuchElementException
+
+def find_element(self, locator: tuple):
+    try:
+        # 匿名函数的作用为接收元组型参数，并作为函数执行，返回定位到的元素
+        element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
+        return element
+    except NoSuchElementException as e:
+        print('Error details: {}'.format(e.args[0]))
+        raise e
+```
+
+
+
+# 七. Web自动化测试unittest框架中使用参数化(数据驱动)
+
+```python
+# 先安装ddt包(重要)
+pip install -i https://pypi.douban.com/simple ddt
+```
+
+
+
+## 1.什么是参数化(数据驱动)
+
+- ### 指利用不同测试数据来测试相同场景，为了提高代码重用性，增加代码效率而采用的一种代码编写方法，叫做参数化，也就是数据驱动。
+
+- ### 测试数据与测试业务分离
+
+
+
+## 2.从函数中返回参数值
+
+```python
+# Util文件用于存放工具类函数
+
+import json
+import os
+import sys
+
+if getattr(sys, 'frozen', False):
+    current_path = os.path.dirname(sys.executable)
+else:
+    current_path = os.path.dirname(os.path.realpath(__file__))
+
+config_json_file_path = os.path.join(current_path, 'smoke_test_baidu_login.json')
+
+if os.path.isfile(config_json_file_path):
+    with open(config_json_file_path, 'r',
+              encoding='utf-8') as data:
+        conf = json.load(data)
+
+
+class Util:
+    username = conf.get("username")
+    password = conf.get("password")
+
+    @classmethod
+    def get_data(cls):
+        """
+        通过此函数返回数据
+        :return: 
+        """
+        testdata = [
+            ("", cls.password, '请您输入手机号/用户名/邮箱'),
+            (cls.username, "", "请您输入密码"),
+            (cls.username + 'x', cls.password, '用户名或密码有误，请重新输入或找回密码'),
+            (cls.username, cls.password + 'x', '用户名或密码有误，请重新输入或找回密码')
+        ]
+        return testdata
+	
+    # 
+    @classmethod
+    def get_data_from_file(cls, path):
+        """
+        通过文件获取数据
+        :param path: 文件路径
+        :return:
+        """
+        rows = []
+        with open(path, 'r', encoding='utf-8') as f:
+            for line in f:
+                user_data = line.strip().split(',')
+                rows.append(user_data)
+        return rows
+```
+
+
+
+```python
+# 代码范例
+import time
+
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from ddt import ddt, data, unpack
+from level_13.unittest_learn.smoke.util import Util
+import unittest
+
+@ddt	# 一定要加ddt装饰器
+class BaiduLoginTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+
+        self.driver = webdriver.Chrome()
+        self.url = 'https://www.baidu.com'
+        self.driver.implicitly_wait(20)
+        self.imgs = []  # 用于保存截图
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+
+    def find_element(self, locator: tuple):
+        try:
+            element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
+            return element
+        except NoSuchElementException as e:
+            print('Error details: {}'.format(e.args[0]))
+            raise e
+
+    def test_login_success(self):
+        """
+        测试当用户名和密码正确时，用户能够成功登陆到系统中
+        :return:
+        """
+        self.driver.get(self.url)
+        self.find_element(('id', 's-top-loginbtn')).click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(Util.username)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(Util.password)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        WebDriverWait(self.driver, 30).until(
+            ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), Util.username))
+        login_name = self.find_element(('css selector', '.user-name.c-font-normal.c-color-t')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
+        self.assertEqual(login_name, Util.username)
+
+    @data(
+         *Util.get_data()	# 通过函数调用获取数据，数据需要解包传入
+     )
+    @unpack	# 再次解包依次传给对应参数
+    def test_dataTest_login_failed(self, username, password, err):
+        """
+        通过数据驱动测试所有登陆失败的测试用例
+        :return:
+        """
+        self.driver.get(self.url)
+        time.sleep(1)
+        self.find_element(('id', 's-top-loginbtn')).click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(username)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(password)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('id', 'TANGRAM__PSP_11__error')).text
+        if login_msg == '':
+            login_msg = self.find_element(('xpath', "//*[contains(text(),'，请重新输入或')]")).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
+        self.assertEqual(login_msg, err)
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+
+
+## 3.从文件中返回参数值
+
+```python
+# 代码范例
+import time
+
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from ddt import ddt, data, unpack
+from level_13.unittest_learn.smoke.util import Util
+import unittest
+
+@ddt	# 一定要加ddt装饰器
+class BaiduLoginTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+
+        self.driver = webdriver.Chrome()
+        self.url = 'https://www.baidu.com'
+        self.driver.implicitly_wait(20)
+        self.imgs = []  # 用于保存截图
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+
+    def find_element(self, locator: tuple):
+        try:
+            element = WebDriverWait(self.driver, 30).until(lambda x: x.find_element(*locator))
+            return element
+        except NoSuchElementException as e:
+            print('Error details: {}'.format(e.args[0]))
+            raise e
+
+    def test_login_success(self):
+        """
+        测试当用户名和密码正确时，用户能够成功登陆到系统中
+        :return:
+        """
+        self.driver.get(self.url)
+        self.find_element(('id', 's-top-loginbtn')).click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(Util.username)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(Util.password)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        WebDriverWait(self.driver, 30).until(
+            ec.text_to_be_present_in_element(('css selector', '.user-name.c-font-normal.c-color-t'), Util.username))
+        login_name = self.find_element(('css selector', '.user-name.c-font-normal.c-color-t')).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
+        self.assertEqual(login_name, Util.username)
+	
+    # # 通过读取文件获取数据，数据需要解包传入
+    @data(
+         *Util.get_data_from_file('/home/kirk/Desktop/learn-code/level_13/unittest_learn/smoke/data.txt')	
+     )
+    @unpack	# 再次解包依次传给对应参数
+    def test_dataTest_login_failed(self, username, password, err):
+        """
+        通过数据驱动测试所有登陆失败的测试用例
+        :return:
+        """
+        self.driver.get(self.url)
+        time.sleep(1)
+        self.find_element(('id', 's-top-loginbtn')).click()
+        WebDriverWait(self.driver, 10).until(ec.element_to_be_clickable(('id', 'TANGRAM__PSP_11__userName')))
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__userName')).send_keys(username)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).clear()
+        self.find_element(('id', 'TANGRAM__PSP_11__password')).send_keys(password)
+        time.sleep(1)
+        self.find_element(('id', 'TANGRAM__PSP_11__submit')).click()
+        login_msg = self.find_element(('id', 'TANGRAM__PSP_11__error')).text
+        if login_msg == '':
+            login_msg = self.find_element(('xpath', "//*[contains(text(),'，请重新输入或')]")).text
+        self.imgs.append(self.driver.get_screenshot_as_base64())  # 执行截图操作，将当前截图加入到测试报告中
+        self.assertEqual(login_msg, err)
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+
+
+# 八. Web自动化测试unittest框架中断言失败后截图(使用自定义断言装饰器)
+
+- ## 单例
+
+```python
+# 代码举例
+from selenium import webdriver
+import unittest
+
+
+class AssertTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.driver = webdriver.Chrome()
+        self.url = "https://www.baidu.com"
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+
+    def test_demo1(self):
+        try:
+            self.driver.get(self.url)
+            self.assertEqual(1, 2)
+        except AssertionError as e:
+            import os, time
+            day = time.strftime('%Y%m%d', time.localtime(time.time()))  # 捕捉年月日
+            # 截图存放路径
+            screenshot_path = os.getcwd() + r'\reports\screenchot_%s' % day  # 通过os.getcwd()获取当前绝对路径
+            if not os.path.exists(screenshot_path):
+                os.makedirs(screenshot_path)
+
+            tm = time.strftime('%H%M%S', time.localtime(time.time()))  # 捕捉时分秒
+            self.driver.get_screenshot_as_file(screenshot_path + r'/{}_{}.png'.format('screen_shot', tm))
+            raise e  # 继续抛出异常给unittest，必须写
+
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+
+
+- ## 集成(定义装饰器)
+
+```python
+# 代码举例
+import os
+import time
+from selenium import webdriver
+import unittest
+
+
+# 定义截图装饰器
+def add_pic(func):
+    def wrapper(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except AssertionError as e:
+            day = time.strftime('%Y%m%d', time.localtime(time.time()))
+            screenshot_path = os.getcwd() + r'\reports\screenshot_%s' % day
+            if not os.path.exists(screenshot_path):
+                os.makedirs(screenshot_path)
+
+            tm = time.strftime('%H%M%S', time.localtime(time.time()))
+            y = lambda x: x.get_screenshot_as_file(screenshot_path + '/{}_{}.png'.format('screen_shot', tm))
+            print(y)
+            raise e
+
+    return wrapper
+
+
+class AssertTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.driver = webdriver.Chrome()
+        self.url = "https://www.baidu.com"
+
+    def tearDown(self) -> None:
+        self.driver.quit()
+        
+    @add_pic	# 引用装饰器，通过装饰器进行截图
+    def testFunc(self):
+        self.driver.get(self.url)
+        self.assertEqual(1, 2)
+```
 
